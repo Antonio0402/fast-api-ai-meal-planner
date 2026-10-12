@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+sqlalchemy>=2.0
+psycopg[binary]
+alembic
+pydantic-settings
+google-genai
+PyJWT[crypto]>=2.10
+Pillow>=11.0
+python-multipart>=0.0.20
+pytest
+httpx

@@ -1,0 +1,131 @@
+# FreshMeal AI Planner API
+
+FastAPI MVP backend. The API uses Supabase Auth JWTs and PostgreSQL; Supabase
+owns login, while the mobile application calls the versioned API routes.
+
+## Setup
+
+1. Create/activate the existing project virtual environment and install:
+
+   ```powershell
+   pip install -r requirements.txt
+   ```
+
+2. Copy `.env.example` to `.env`, then configure the existing Supabase project's
+   PostgreSQL `DATABASE_URL`, `SUPABASE_URL`, and `GEMINI_API_KEY`. Never commit `.env`.
+   Copy the Session pooler URI from the intended Supabase project's **Connect**
+   dialog and URL-encode special characters in its password.
+   PostgreSQL URLs in `postgres://` or `postgresql://` form are normalized to
+   the installed psycopg driver.
+3. Apply migrations and seed data to the intended database:
+
+   ```powershell
+   python -m scripts.run_migrations
+   ```
+
+   These operations are explicit; application startup never migrates the
+   database. `scripts.seed_data` is mock-only and requires `IS_MOCKING=true`;
+   never use it for the real app. Migration `002_app_data.sql` adds the mobile
+   snapshot, replay keys, and user-owned AI recipes. Review SQL before applying.
+4. Start the API:
+
+   ```powershell
+   uvicorn app.main:app --reload
+   ```
+
+   Interactive OpenAPI is available at `/docs`; the internal health endpoint
+   is `/health`.
+
+The mobile app calls the versioned routes in `app/api/routes/`: snapshot sync
+under `users`, AI recipes under `recipes`, plan/shopping under `meal_plans`, and
+image detection under `scan_jobs`. Confirmed inventory drives recipe generation;
+the backend does not seed a fixed catalog in live mode. The app's
+`EXPO_PUBLIC_IS_MOCKING` and backend `IS_MOCKING` must both be `true` to use
+their respective mock data. Native devices need a reachable HTTPS or LAN API
+origin rather than `127.0.0.1`.
+
+## Tests
+
+The AI layer has a standalone offline suite that needs no database:
+
+```powershell
+python -m pytest --confcutdir=tests/ai tests/ai -q
+```
+
+Tests require a dedicated local PostgreSQL database. They reject non-local
+hosts, create a minimal `auth.users` stub if needed, and run migrations/seed
+only against `TEST_DATABASE_URL`. They use generated RSA JWT keys and fake AI
+clients; they do not call Supabase or Gemini.
+
+```powershell
+$env:TEST_DATABASE_URL = 'postgresql+psycopg://postgres:<local-password>@localhost:5432/freshplandb'; $env:DATABASE_URL = $env:TEST_DATABASE_URL; python -m pytest -q
+```
+
+## Scan storage and operational notes
+
+- Uploads accept JPEG, PNG, or WebP, are limited to 5 MB, checked against magic
+  bytes and decoded before a job is created.
+- The MVP uses FastAPI `BackgroundTasks` and private local files under
+  `var/scans/`; processing concurrency and stuck-job recovery are configured
+  through `.env`. This is single-process storage, not durable queue/object
+  storage. Use shared private object storage and a durable worker before
+  deploying multiple API instances.
+- Job images are removed after confirmation or expiration. The scan worker
+  stores only normalized public error codes, not provider response bodies.
+- The AI scan source is vendored under `app/ai/vendor/`; its key-file loader is
+  not used. The backend reads only `GEMINI_API_KEY` and `GEMINI_MODEL`.
+- Gemini scan requests include a JSON schema capped at 20 ingredients. The
+  mobile detect route preserves rate-limit (429), timeout (504), invalid-output
+  (502), and configuration/provider-unavailable (503) error codes. Offline
+  tests in `tests/ai/test_scan_flow.py` cover this route without database access.
+- `sql/migrations/001_user_scan_idempotency.sql` adds foreign keys as `NOT
+  VALID` to avoid blocking deployment on legacy orphan rows. New writes are
+  checked; validate those constraints separately after reviewing legacy data.
+
+## Lớp AI từ GeminiAgentMealPLanner
+
+Logic `agent.py` và `recipe.py` được tích hợp vào `app/ai/vendor/`, cùng adapter, key router và scan hiện có. Backend chạy độc lập, không import thư mục service gốc và không đọc `.env.ai`. Không cần dependency hoặc migration mới.
+
+Điểm gọi dùng cấu hình FastAPI:
+
+```python
+from app.ai.gemini_provider import generate_recipe, run_agent
+from app.ai.vendor.agent import ChatMessage
+
+result = run_agent(
+    user_message="Tôi còn gì trong kho?",
+    history=[ChatMessage(role="user", content="Tôi muốn nấu bữa tối")],
+    tool_dispatcher=backend_dispatcher,
+    auth_context={"user_id": authenticated_user_id},
+    max_tool_calls=5,
+)
+
+recipe_text = generate_recipe(
+    recipe="Luộc 2 quả trứng trong 5 phút.",
+    user_context={"preferences": ["Hướng dẫn ngắn gọn"]},
+)
+```
+
+`backend_dispatcher` là callback do backend cung cấp, theo `ToolDispatcher` trong
+`vendor/agent.py`: `execute(tool_name=..., payload=..., auth_context=...)` trả
+`ToolExecutionResult`. Callback phải xác thực user, kiểm tra quyền sở hữu,
+validate dữ liệu nghiệp vụ và ghi dữ liệu an toàn; không lấy user ID từ tham số
+do model sinh. Lớp AI chỉ kiểm tra hợp đồng tool, không tự có quyền truy cập DB.
+Chưa thêm endpoint chat hoặc dispatcher ghi dữ liệu trong lần tích hợp này.
+
+Agent chỉ gọi `view`, `add`, `update`, `delete` trên `user_context`, `inventory`,
+`shopping_list`. Mỗi lượt sửa tool call sai tối đa một lần, không chạy batch
+vượt giới hạn và dừng khi callback trả lỗi. Khi dùng hết budget, model vẫn được
+trả lời kết thúc, nhưng không được gọi thêm tool. Kết quả có `status`, `message`,
+`steps_used`, `tool_results`, `error`; các thao tác đã thành công trước lỗi vẫn
+nằm trong `tool_results`, không tự rollback toàn bộ lượt hội thoại.
+
+Adapter dùng `systemInstruction`, `functionCall` và `functionResponse` có cấu
+trúc, giữ nguyên các part/thought signature của model. Lỗi transport được chuyển
+thành `APIError` công khai mà không trả response hoặc key của Gemini.
+
+`generate_recipe` chỉ diễn đạt lại công thức nguồn bằng plain text. Prompt yêu
+cầu giữ nguyên nguyên liệu, lượng, đơn vị, thứ tự, thời gian và nhiệt độ; đây là
+yêu cầu gửi model, không phải kiểm chứng tự động tính tương đương của văn bản.
+Luồng `services/recipe_generation.py` sinh recipe JSON từ inventory và luồng
+scan vẫn dùng các hợp đồng hiện có.
