@@ -6,10 +6,11 @@ from sqlalchemy.orm import Session
 from starlette.concurrency import run_in_threadpool
 
 from app.core.auth import get_current_user
-from app.core.errors import APIError
+from app.core.errors import AI_ERROR_RESPONSES, APIError
 from app.core.image_storage import delete_scan_image
 from app.db.session import get_db
 from app.schemas.scan import ScanCandidate, ScanConfirmInput
+from app.schemas.error import ErrorResponse
 from app.services.scan_service import (
     _ERROR_MESSAGES,
     _get_ai_output,
@@ -27,7 +28,14 @@ from app.services.scan_service import (
 router = APIRouter()
 
 
-@router.post("/detect", response_model=list[ScanCandidate], response_model_exclude_unset=True)
+@router.post(
+    "/detect", response_model=list[ScanCandidate], response_model_exclude_unset=True,
+    responses={
+        **AI_ERROR_RESPONSES,
+        413: {"model": ErrorResponse, "description": "IMAGE_TOO_LARGE: tệp hoặc kích thước ảnh vượt giới hạn."},
+        415: {"model": ErrorResponse, "description": "UNSUPPORTED_MEDIA_TYPE: ảnh phải là JPEG, PNG hoặc WebP hợp lệ."},
+    },
+)
 async def detect_for_mobile(
     file: UploadFile = File(...),
     _: str = Depends(get_current_user),

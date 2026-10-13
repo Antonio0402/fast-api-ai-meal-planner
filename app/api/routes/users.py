@@ -13,6 +13,7 @@ from app.core.errors import APIError
 from app.db.session import get_db
 from app.schemas.app_data import AppData, AppDataResponse
 from app.schemas.profile import ProfilePatch
+from app.schemas.error import ErrorResponse
 from app.services.db_utils import fetch_one
 
 router = APIRouter()
@@ -35,11 +36,23 @@ def get_app_data(
                      "slots": {}, "checked": {}}, "revision": 0}
 
 
-@router.put("/me/data", response_model=AppDataResponse, response_model_exclude_unset=True)
+@router.put(
+    "/me/data", response_model=AppDataResponse, response_model_exclude_unset=True,
+    responses={
+        409: {"model": ErrorResponse, "description": "IDEMPOTENCY_CONFLICT: khóa đã dùng cho payload khác; hoặc xung đột dữ liệu."},
+        412: {"model": ErrorResponse, "description": "REVISION_CONFLICT: revision đã thay đổi; tải lại dữ liệu trước khi lưu."},
+    },
+)
 def put_app_data(
     payload: AppData,
-    if_match: Annotated[str, Header(alias="If-Match")],
-    idempotency_key: Annotated[UUID, Header(alias="Idempotency-Key")],
+    if_match: Annotated[str, Header(
+        alias="If-Match", examples=['"0"'],
+        description='Revision hiện tại đặt trong dấu nháy kép, ví dụ "0". Revision cũ trả lỗi 412.',
+    )],
+    idempotency_key: Annotated[UUID, Header(
+        alias="Idempotency-Key",
+        description="UUID của một lần lưu. Khi thử lại phải giữ cùng khóa và payload; đổi payload với cùng khóa trả lỗi 409.",
+    )],
     user_id: str = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:

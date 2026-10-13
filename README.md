@@ -44,7 +44,37 @@ the backend does not seed a fixed catalog in live mode. The app's
 their respective mock data. Native devices need a reachable HTTPS or LAN API
 origin rather than `127.0.0.1`.
 
+## Xuất hợp đồng OpenAPI
+
+Chạy từ thư mục `fast-api` với môi trường Python đã cài dependencies:
+
+```powershell
+python -m scripts.export_openapi
+```
+
+Lệnh sinh `openapi.json` từ route và model Pydantic hiện tại. Không cần `.env`,
+credentials, database hay server đang chạy. CLI dùng cấu hình SQLite trong bộ nhớ riêng cho tiến trình xuất, không mở kết nối và không chạy lifespan, migration hoặc AI.
+File JSON có thứ tự key ổn định, UTF-8 và newline LF; không sửa thủ công.
+Có thể đổi đường dẫn bằng `--output <path>` (thư mục đích phải tồn tại).
+Khi thay đổi hợp đồng API, chạy lại lệnh và review diff `openapi.json` cùng source.
+Các field bên trong JSONB lấy từ Pydantic; thêm cột PostgreSQL không tự đổi OpenAPI.
+
+OpenAPI mô tả envelope lỗi `{error: {code, message}, detail: {code, message}}`,
+header bắt buộc `If-Match`/`Idempotency-Key` của PUT snapshot, các lỗi revision,
+idempotency, upload và AI. Một số route không được mobile dùng vẫn giữ response
+dictionary tổng quát; bước này không mở rộng model cho các route đó.
+
 ## Tests
+
+Kiểm thử xuất OpenAPI và hợp đồng mobile không cần PostgreSQL:
+
+```powershell
+$env:DATABASE_URL = 'sqlite+pysqlite:///:memory:'
+python -m unittest tests.test_openapi_export tests.test_mobile_contract -v
+```
+
+Bộ export chạy trong tiến trình con, chặn kết nối DB/mạng và kiểm tra sinh file
+hai lần cho cùng nội dung. Bộ mobile dùng DB/AI mock, không gọi dịch vụ thật.
 
 The AI layer has a standalone offline suite that needs no database:
 
