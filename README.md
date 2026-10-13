@@ -46,23 +46,36 @@ origin rather than `127.0.0.1`.
 
 ## Xuất hợp đồng OpenAPI
 
+Từ `../fresh-plan`, `npm run generate:api` thực hiện kiểm tra project/database live,
+kiểm tra drift rồi xuất OpenAPI qua stdout và sinh API types đang dùng ở frontend.
+Cài package codegen riêng bằng `npm run setup:schemas`; xem
+`../fresh-plan/SCHEMA_CODEGEN.md` về đăng nhập CLI, baseline và giới hạn drift.
+`scripts.schema_contract database` chỉ đọc catalog trong transaction READ ONLY; không chạy
+migration. `database.schema.json` là baseline remote, không phải lịch sử migration.
+
 Chạy từ thư mục `fast-api` với môi trường Python đã cài dependencies:
 
 ```powershell
-python -m scripts.export_openapi
+python -m scripts.schema_contract api
 ```
 
-Lệnh sinh `openapi.json` từ route và model Pydantic hiện tại. Không cần `.env`,
+Lệnh xuất JSON qua stdout từ route và model Pydantic hiện tại. Không cần `.env`,
 credentials, database hay server đang chạy. CLI dùng cấu hình SQLite trong bộ nhớ riêng cho tiến trình xuất, không mở kết nối và không chạy lifespan, migration hoặc AI.
 File JSON có thứ tự key ổn định, UTF-8 và newline LF; không sửa thủ công.
-Có thể đổi đường dẫn bằng `--output <path>` (thư mục đích phải tồn tại).
-Khi thay đổi hợp đồng API, chạy lại lệnh và review diff `openapi.json` cùng source.
+Có thể xuất file để xem bằng `--output <path>` (thư mục đích phải tồn tại), nhưng
+không lưu thêm OpenAPI JSON vào repo. Khi đổi hợp đồng, sinh lại và review diff
+`fresh-plan/src/services/generated/api.types.ts` cùng source.
 Các field bên trong JSONB lấy từ Pydantic; thêm cột PostgreSQL không tự đổi OpenAPI.
 
 OpenAPI mô tả envelope lỗi `{error: {code, message}, detail: {code, message}}`,
 header bắt buộc `If-Match`/`Idempotency-Key` của PUT snapshot, các lỗi revision,
 idempotency, upload và AI. Một số route không được mobile dùng vẫn giữ response
 dictionary tổng quát; bước này không mở rộng model cho các route đó.
+
+Các script còn lại có mục đích riêng: `run_migrations` áp dụng SQL khi được yêu cầu;
+`seed_data` chỉ nạp dữ liệu mock. Chúng không thuộc codegen và không chạy tự động.
+Các database types Python/TypeScript không có nơi dùng đã bỏ; Pydantic gắn vào
+`response_model` của route vẫn thực hiện validation/serialization tại runtime.
 
 ## Tests
 

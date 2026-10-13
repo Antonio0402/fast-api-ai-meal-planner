@@ -13,7 +13,7 @@ from app.ai.errors import meal_generation_error
 from app.core.errors import APIError
 from app.core.normalization import normalize_name
 from app.schemas.app_data import Ingredient
-from app.schemas.recipe import GeneratedRecipe, RecipeItem
+from app.schemas.recipe import GeneratedRecipe
 from app.services.db_utils import fetch_all
 from app.services.unit_aliases import to_base
 
