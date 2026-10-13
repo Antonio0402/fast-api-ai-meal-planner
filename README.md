@@ -117,7 +117,12 @@ $env:TEST_DATABASE_URL = 'postgresql+psycopg://postgres:<local-password>@localho
 - Job images are removed after confirmation or expiration. The scan worker
   stores only normalized public error codes, not provider response bodies.
 - The AI scan source is vendored under `app/ai/vendor/`; its key-file loader is
-  not used. The backend reads only `GEMINI_API_KEY` and `GEMINI_MODEL`.
+  not used. The backend reads `GEMINI_API_KEY`; image scans use
+  `GEMINI_SCAN_MODEL` (default `gemini-2.5-pro`) and
+  `GEMINI_SCAN_TIMEOUT_SECONDS` (default 90 seconds). Other AI tasks use
+  `GEMINI_MODEL` and `GEMINI_TIMEOUT_SECONDS`. Restart the backend after
+  changing these settings. Pro requests can take longer and cost more;
+  availability and quotas depend on the Google API project.
 - Gemini scan requests include a JSON schema capped at 20 ingredients. The
   mobile detect route preserves rate-limit (429), timeout (504), invalid-output
   (502), and configuration/provider-unavailable (503) error codes. Offline
