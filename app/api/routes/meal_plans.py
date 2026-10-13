@@ -8,7 +8,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.core.auth import get_current_user
-from app.core.errors import APIError
+from app.core.errors import AI_ERROR_RESPONSES, APIError
 from app.core.normalization import normalize_name
 from app.db.session import get_db
 from app.schemas.app_data import Ingredient, SavedPlan, ShoppingItem
@@ -47,7 +47,7 @@ class BuildShoppingInput(BaseModel):
     inventory: list[Ingredient]
 
 
-@router.post("/generate-from-inventory", response_model=dict[str, str])
+@router.post("/generate-from-inventory", response_model=dict[str, str], responses=AI_ERROR_RESPONSES)
 def generate_from_inventory(
     payload: GenerateFromInventoryInput,
     user_id: str = Depends(get_current_user),

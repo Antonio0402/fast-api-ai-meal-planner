@@ -7,6 +7,23 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from app.schemas.error import ErrorDetail, ErrorResponse
+
+# Các lỗi chung của route có xác thực, kể cả lỗi validation do FastAPI tạo.
+AUTH_ERROR_RESPONSES = {
+    401: {"model": ErrorResponse, "description": "Thiếu hoặc không xác minh được phiên Supabase."},
+    409: {"model": ErrorResponse, "description": "Dữ liệu xung đột với trạng thái hiện tại."},
+    422: {"model": ErrorResponse, "description": "Dữ liệu yêu cầu hoặc điều kiện nghiệp vụ không hợp lệ."},
+    500: {"model": ErrorResponse, "description": "Lỗi nội bộ; chi tiết riêng tư không được trả về."},
+}
+
+AI_ERROR_RESPONSES = {
+    429: {"model": ErrorResponse, "description": "AI_RATE_LIMITED: dịch vụ AI quá tải."},
+    502: {"model": ErrorResponse, "description": "AI_OUTPUT_INVALID: kết quả AI không hợp lệ."},
+    503: {"model": ErrorResponse, "description": "AI_CONFIG_ERROR hoặc AI_PROVIDER_UNAVAILABLE."},
+    504: {"model": ErrorResponse, "description": "AI_TIMEOUT: xử lý AI quá thời gian."},
+}
+
 logger = logging.getLogger(__name__)
 
 
@@ -18,12 +35,10 @@ class APIError(Exception):
 
 
 def error_response(status_code: int, code: str, message: str) -> JSONResponse:
+    detail = ErrorDetail(code=code, message=message)
     return JSONResponse(
         status_code=status_code,
-        content={
-            "error": {"code": code, "message": message},
-            "detail": {"code": code, "message": message}
-        },
+        content=ErrorResponse(error=detail, detail=detail).model_dump(),
     )
 
 

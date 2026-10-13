@@ -4,7 +4,7 @@ from typing import AsyncGenerator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.concurrency import run_in_threadpool
-from app.core.errors import install_error_handlers
+from app.core.errors import AUTH_ERROR_RESPONSES, install_error_handlers
 from app.core.config import settings
 
 from app.api.routes import health, meal_plans, recipes, users, scan_jobs
@@ -31,8 +31,8 @@ app.add_middleware(
 )
 
 app.include_router(health.router)
-app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
+app.include_router(users.router, prefix="/api/v1/users", tags=["users"], responses=AUTH_ERROR_RESPONSES)
 # Tạm tắt route inventory-items: FreshPlan tải/lưu kho qua users/me/data.
-app.include_router(recipes.router, prefix="/api/v1/recipes", tags=["recipes"])
-app.include_router(meal_plans.router, prefix="/api/v1/weekly-plans", tags=["weekly-plans"])
-app.include_router(scan_jobs.router, prefix="/api/v1/scan-jobs", tags=["scan-jobs"])
+app.include_router(recipes.router, prefix="/api/v1/recipes", tags=["recipes"], responses=AUTH_ERROR_RESPONSES)
+app.include_router(meal_plans.router, prefix="/api/v1/weekly-plans", tags=["weekly-plans"], responses=AUTH_ERROR_RESPONSES)
+app.include_router(scan_jobs.router, prefix="/api/v1/scan-jobs", tags=["scan-jobs"], responses=AUTH_ERROR_RESPONSES)
