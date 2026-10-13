@@ -1,0 +1,4527 @@
+{
+  "project_ref": "xveulgxwpsqerrxvglle",
+  "columns": [
+    {
+      "default_expression": "gen_random_uuid()",
+      "generated": "",
+      "identity": "",
+      "name": "id",
+      "not_null": true,
+      "table_name": "allergens",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "code",
+      "not_null": true,
+      "table_name": "allergens",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "name",
+      "not_null": true,
+      "table_name": "allergens",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "user_id",
+      "not_null": true,
+      "table_name": "app_data_mutations",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "mutation_id",
+      "not_null": true,
+      "table_name": "app_data_mutations",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "request_hash",
+      "not_null": true,
+      "table_name": "app_data_mutations",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "response_json",
+      "not_null": true,
+      "table_name": "app_data_mutations",
+      "type": "jsonb"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "created_at",
+      "not_null": true,
+      "table_name": "app_data_mutations",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "user_id",
+      "not_null": true,
+      "table_name": "app_data_snapshots",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "data",
+      "not_null": true,
+      "table_name": "app_data_snapshots",
+      "type": "jsonb"
+    },
+    {
+      "default_expression": "0",
+      "generated": "",
+      "identity": "",
+      "name": "revision",
+      "not_null": true,
+      "table_name": "app_data_snapshots",
+      "type": "bigint"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "updated_at",
+      "not_null": true,
+      "table_name": "app_data_snapshots",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "ingredient_id",
+      "not_null": true,
+      "table_name": "ingredient_allergens",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "allergen_id",
+      "not_null": true,
+      "table_name": "ingredient_allergens",
+      "type": "uuid"
+    },
+    {
+      "default_expression": "gen_random_uuid()",
+      "generated": "",
+      "identity": "",
+      "name": "id",
+      "not_null": true,
+      "table_name": "ingredients",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "name",
+      "not_null": true,
+      "table_name": "ingredients",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "normalized_name",
+      "not_null": true,
+      "table_name": "ingredients",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "shopping_group",
+      "not_null": true,
+      "table_name": "ingredients",
+      "type": "text"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "created_at",
+      "not_null": true,
+      "table_name": "ingredients",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "updated_at",
+      "not_null": true,
+      "table_name": "ingredients",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": "gen_random_uuid()",
+      "generated": "",
+      "identity": "",
+      "name": "id",
+      "not_null": true,
+      "table_name": "inventory_items",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "user_id",
+      "not_null": true,
+      "table_name": "inventory_items",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "ingredient_id",
+      "not_null": false,
+      "table_name": "inventory_items",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "name",
+      "not_null": true,
+      "table_name": "inventory_items",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "normalized_name",
+      "not_null": true,
+      "table_name": "inventory_items",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "quantity",
+      "not_null": false,
+      "table_name": "inventory_items",
+      "type": "numeric(12,3)"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "unit_code",
+      "not_null": true,
+      "table_name": "inventory_items",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "expiry_date",
+      "not_null": false,
+      "table_name": "inventory_items",
+      "type": "date"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "created_at",
+      "not_null": true,
+      "table_name": "inventory_items",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "updated_at",
+      "not_null": true,
+      "table_name": "inventory_items",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": "gen_random_uuid()",
+      "generated": "",
+      "identity": "",
+      "name": "id",
+      "not_null": true,
+      "table_name": "recipe_ingredients",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "recipe_id",
+      "not_null": true,
+      "table_name": "recipe_ingredients",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "ingredient_id",
+      "not_null": true,
+      "table_name": "recipe_ingredients",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "quantity",
+      "not_null": true,
+      "table_name": "recipe_ingredients",
+      "type": "numeric(12,3)"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "unit_code",
+      "not_null": true,
+      "table_name": "recipe_ingredients",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "position",
+      "not_null": true,
+      "table_name": "recipe_ingredients",
+      "type": "smallint"
+    },
+    {
+      "default_expression": "gen_random_uuid()",
+      "generated": "",
+      "identity": "",
+      "name": "id",
+      "not_null": true,
+      "table_name": "recipe_steps",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "recipe_id",
+      "not_null": true,
+      "table_name": "recipe_steps",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "position",
+      "not_null": true,
+      "table_name": "recipe_steps",
+      "type": "smallint"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "text",
+      "not_null": true,
+      "table_name": "recipe_steps",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "id",
+      "not_null": true,
+      "table_name": "recipes",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "title",
+      "not_null": true,
+      "table_name": "recipes",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "minutes",
+      "not_null": true,
+      "table_name": "recipes",
+      "type": "smallint"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "base_servings",
+      "not_null": true,
+      "table_name": "recipes",
+      "type": "smallint"
+    },
+    {
+      "default_expression": "true",
+      "generated": "",
+      "identity": "",
+      "name": "is_active",
+      "not_null": true,
+      "table_name": "recipes",
+      "type": "boolean"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "created_at",
+      "not_null": true,
+      "table_name": "recipes",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "updated_at",
+      "not_null": true,
+      "table_name": "recipes",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": "gen_random_uuid()",
+      "generated": "",
+      "identity": "",
+      "name": "id",
+      "not_null": true,
+      "table_name": "saved_plan_revisions",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "weekly_plan_id",
+      "not_null": true,
+      "table_name": "saved_plan_revisions",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "version",
+      "not_null": true,
+      "table_name": "saved_plan_revisions",
+      "type": "integer"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "portions",
+      "not_null": true,
+      "table_name": "saved_plan_revisions",
+      "type": "smallint"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "created_at",
+      "not_null": true,
+      "table_name": "saved_plan_revisions",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "revision_id",
+      "not_null": true,
+      "table_name": "saved_plan_slots",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "day_index",
+      "not_null": true,
+      "table_name": "saved_plan_slots",
+      "type": "smallint"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "meal_index",
+      "not_null": true,
+      "table_name": "saved_plan_slots",
+      "type": "smallint"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "recipe_id",
+      "not_null": true,
+      "table_name": "saved_plan_slots",
+      "type": "text"
+    },
+    {
+      "default_expression": "gen_random_uuid()",
+      "generated": "",
+      "identity": "",
+      "name": "id",
+      "not_null": true,
+      "table_name": "scan_candidates",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "scan_job_id",
+      "not_null": true,
+      "table_name": "scan_candidates",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "suggested_name",
+      "not_null": true,
+      "table_name": "scan_candidates",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "ingredient_id",
+      "not_null": false,
+      "table_name": "scan_candidates",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "confidence",
+      "not_null": false,
+      "table_name": "scan_candidates",
+      "type": "numeric(5,4)"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "position",
+      "not_null": true,
+      "table_name": "scan_candidates",
+      "type": "smallint"
+    },
+    {
+      "default_expression": "gen_random_uuid()",
+      "generated": "",
+      "identity": "",
+      "name": "id",
+      "not_null": true,
+      "table_name": "scan_jobs",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "user_id",
+      "not_null": true,
+      "table_name": "scan_jobs",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "status",
+      "not_null": true,
+      "table_name": "scan_jobs",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "error_code",
+      "not_null": false,
+      "table_name": "scan_jobs",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "image_object_key",
+      "not_null": false,
+      "table_name": "scan_jobs",
+      "type": "text"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "idempotency_key",
+      "not_null": true,
+      "table_name": "scan_jobs",
+      "type": "text"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "created_at",
+      "not_null": true,
+      "table_name": "scan_jobs",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "updated_at",
+      "not_null": true,
+      "table_name": "scan_jobs",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "expires_at",
+      "not_null": true,
+      "table_name": "scan_jobs",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "revision_id",
+      "not_null": true,
+      "table_name": "shopping_item_checks",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "ingredient_id",
+      "not_null": true,
+      "table_name": "shopping_item_checks",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "dimension_key",
+      "not_null": true,
+      "table_name": "shopping_item_checks",
+      "type": "text"
+    },
+    {
+      "default_expression": "false",
+      "generated": "",
+      "identity": "",
+      "name": "is_checked",
+      "not_null": true,
+      "table_name": "shopping_item_checks",
+      "type": "boolean"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "updated_at",
+      "not_null": true,
+      "table_name": "shopping_item_checks",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "user_id",
+      "not_null": true,
+      "table_name": "user_allergies",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "allergen_id",
+      "not_null": true,
+      "table_name": "user_allergies",
+      "type": "uuid"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "created_at",
+      "not_null": true,
+      "table_name": "user_allergies",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "user_id",
+      "not_null": true,
+      "table_name": "user_profiles",
+      "type": "uuid"
+    },
+    {
+      "default_expression": "2",
+      "generated": "",
+      "identity": "",
+      "name": "default_portions",
+      "not_null": true,
+      "table_name": "user_profiles",
+      "type": "smallint"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "created_at",
+      "not_null": true,
+      "table_name": "user_profiles",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "updated_at",
+      "not_null": true,
+      "table_name": "user_profiles",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "user_id",
+      "not_null": true,
+      "table_name": "user_recipes",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "id",
+      "not_null": true,
+      "table_name": "user_recipes",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "recipe",
+      "not_null": true,
+      "table_name": "user_recipes",
+      "type": "jsonb"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "source_hash",
+      "not_null": true,
+      "table_name": "user_recipes",
+      "type": "text"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "created_at",
+      "not_null": true,
+      "table_name": "user_recipes",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "weekly_plan_id",
+      "not_null": true,
+      "table_name": "weekly_plan_slots",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "day_index",
+      "not_null": true,
+      "table_name": "weekly_plan_slots",
+      "type": "smallint"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "meal_index",
+      "not_null": true,
+      "table_name": "weekly_plan_slots",
+      "type": "smallint"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "recipe_id",
+      "not_null": true,
+      "table_name": "weekly_plan_slots",
+      "type": "text"
+    },
+    {
+      "default_expression": "gen_random_uuid()",
+      "generated": "",
+      "identity": "",
+      "name": "id",
+      "not_null": true,
+      "table_name": "weekly_plans",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "user_id",
+      "not_null": true,
+      "table_name": "weekly_plans",
+      "type": "uuid"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "week_start",
+      "not_null": true,
+      "table_name": "weekly_plans",
+      "type": "date"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "draft_portions",
+      "not_null": true,
+      "table_name": "weekly_plans",
+      "type": "smallint"
+    },
+    {
+      "default_expression": null,
+      "generated": "",
+      "identity": "",
+      "name": "published_revision_id",
+      "not_null": false,
+      "table_name": "weekly_plans",
+      "type": "uuid"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "created_at",
+      "not_null": true,
+      "table_name": "weekly_plans",
+      "type": "timestamp with time zone"
+    },
+    {
+      "default_expression": "now()",
+      "generated": "",
+      "identity": "",
+      "name": "updated_at",
+      "not_null": true,
+      "table_name": "weekly_plans",
+      "type": "timestamp with time zone"
+    }
+  ],
+  "constraints": [
+    {
+      "definition": "UNIQUE (code)",
+      "name": "allergens_code_key",
+      "table_name": "allergens",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (id)",
+      "name": "allergens_pkey",
+      "table_name": "allergens",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (user_id, mutation_id)",
+      "name": "app_data_mutations_pkey",
+      "table_name": "app_data_mutations",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "name": "app_data_mutations_user_id_fkey",
+      "table_name": "app_data_mutations",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (user_id)",
+      "name": "app_data_snapshots_pkey",
+      "table_name": "app_data_snapshots",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (revision >= 0)",
+      "name": "app_data_snapshots_revision_check",
+      "table_name": "app_data_snapshots",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "name": "app_data_snapshots_user_id_fkey",
+      "table_name": "app_data_snapshots",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (allergen_id) REFERENCES allergens(id) ON DELETE CASCADE",
+      "name": "ingredient_allergens_allergen_id_fkey",
+      "table_name": "ingredient_allergens",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (ingredient_id) REFERENCES ingredients(id) ON DELETE CASCADE",
+      "name": "ingredient_allergens_ingredient_id_fkey",
+      "table_name": "ingredient_allergens",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (ingredient_id, allergen_id)",
+      "name": "ingredient_allergens_pkey",
+      "table_name": "ingredient_allergens",
+      "validated": true
+    },
+    {
+      "definition": "UNIQUE (normalized_name)",
+      "name": "ingredients_normalized_name_key",
+      "table_name": "ingredients",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (id)",
+      "name": "ingredients_pkey",
+      "table_name": "ingredients",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (ingredient_id) REFERENCES ingredients(id) ON DELETE SET NULL",
+      "name": "inventory_items_ingredient_id_fkey",
+      "table_name": "inventory_items",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (id)",
+      "name": "inventory_items_pkey",
+      "table_name": "inventory_items",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (quantity IS NULL OR quantity >= 0::numeric)",
+      "name": "inventory_items_quantity_check",
+      "table_name": "inventory_items",
+      "validated": true
+    },
+    {
+      "definition": "UNIQUE (user_id, normalized_name, unit_code)",
+      "name": "inventory_items_user_id_normalized_name_unit_code_key",
+      "table_name": "inventory_items",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)",
+      "name": "recipe_ingredients_ingredient_id_fkey",
+      "table_name": "recipe_ingredients",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (id)",
+      "name": "recipe_ingredients_pkey",
+      "table_name": "recipe_ingredients",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (\"position\" >= 0)",
+      "name": "recipe_ingredients_position_check",
+      "table_name": "recipe_ingredients",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (quantity > 0::numeric)",
+      "name": "recipe_ingredients_quantity_check",
+      "table_name": "recipe_ingredients",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE",
+      "name": "recipe_ingredients_recipe_id_fkey",
+      "table_name": "recipe_ingredients",
+      "validated": true
+    },
+    {
+      "definition": "UNIQUE (recipe_id, \"position\")",
+      "name": "recipe_ingredients_recipe_id_position_key",
+      "table_name": "recipe_ingredients",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (id)",
+      "name": "recipe_steps_pkey",
+      "table_name": "recipe_steps",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (\"position\" >= 0)",
+      "name": "recipe_steps_position_check",
+      "table_name": "recipe_steps",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE",
+      "name": "recipe_steps_recipe_id_fkey",
+      "table_name": "recipe_steps",
+      "validated": true
+    },
+    {
+      "definition": "UNIQUE (recipe_id, \"position\")",
+      "name": "recipe_steps_recipe_id_position_key",
+      "table_name": "recipe_steps",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (base_servings > 0)",
+      "name": "recipes_base_servings_check",
+      "table_name": "recipes",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (minutes > 0)",
+      "name": "recipes_minutes_check",
+      "table_name": "recipes",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (id)",
+      "name": "recipes_pkey",
+      "table_name": "recipes",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (id)",
+      "name": "saved_plan_revisions_pkey",
+      "table_name": "saved_plan_revisions",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (portions >= 1 AND portions <= 12)",
+      "name": "saved_plan_revisions_portions_check",
+      "table_name": "saved_plan_revisions",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (version > 0)",
+      "name": "saved_plan_revisions_version_check",
+      "table_name": "saved_plan_revisions",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (weekly_plan_id) REFERENCES weekly_plans(id) ON DELETE CASCADE",
+      "name": "saved_plan_revisions_weekly_plan_id_fkey",
+      "table_name": "saved_plan_revisions",
+      "validated": true
+    },
+    {
+      "definition": "UNIQUE (weekly_plan_id, id)",
+      "name": "saved_plan_revisions_weekly_plan_id_id_key",
+      "table_name": "saved_plan_revisions",
+      "validated": true
+    },
+    {
+      "definition": "UNIQUE (weekly_plan_id, version)",
+      "name": "saved_plan_revisions_weekly_plan_id_version_key",
+      "table_name": "saved_plan_revisions",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (day_index >= 0 AND day_index <= 6)",
+      "name": "saved_plan_slots_day_index_check",
+      "table_name": "saved_plan_slots",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (meal_index >= 0 AND meal_index <= 2)",
+      "name": "saved_plan_slots_meal_index_check",
+      "table_name": "saved_plan_slots",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (revision_id, day_index, meal_index)",
+      "name": "saved_plan_slots_pkey",
+      "table_name": "saved_plan_slots",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (recipe_id) REFERENCES recipes(id)",
+      "name": "saved_plan_slots_recipe_id_fkey",
+      "table_name": "saved_plan_slots",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (revision_id) REFERENCES saved_plan_revisions(id) ON DELETE CASCADE",
+      "name": "saved_plan_slots_revision_id_fkey",
+      "table_name": "saved_plan_slots",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (confidence IS NULL OR confidence >= 0::numeric AND confidence <= 1::numeric)",
+      "name": "scan_candidates_confidence_check",
+      "table_name": "scan_candidates",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (ingredient_id) REFERENCES ingredients(id) ON DELETE SET NULL",
+      "name": "scan_candidates_ingredient_id_fkey",
+      "table_name": "scan_candidates",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (id)",
+      "name": "scan_candidates_pkey",
+      "table_name": "scan_candidates",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (\"position\" >= 0)",
+      "name": "scan_candidates_position_check",
+      "table_name": "scan_candidates",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (scan_job_id) REFERENCES scan_jobs(id) ON DELETE CASCADE",
+      "name": "scan_candidates_scan_job_id_fkey",
+      "table_name": "scan_candidates",
+      "validated": true
+    },
+    {
+      "definition": "UNIQUE (scan_job_id, \"position\")",
+      "name": "scan_candidates_scan_job_id_position_key",
+      "table_name": "scan_candidates",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (id)",
+      "name": "scan_jobs_pkey",
+      "table_name": "scan_jobs",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (status = ANY (ARRAY['queued'::text, 'processing'::text, 'succeeded'::text, 'failed'::text, 'confirmed'::text, 'expired'::text]))",
+      "name": "scan_jobs_status_check",
+      "table_name": "scan_jobs",
+      "validated": true
+    },
+    {
+      "definition": "UNIQUE (user_id, idempotency_key)",
+      "name": "scan_jobs_user_id_idempotency_key_key",
+      "table_name": "scan_jobs",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)",
+      "name": "shopping_item_checks_ingredient_id_fkey",
+      "table_name": "shopping_item_checks",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (revision_id, ingredient_id, dimension_key)",
+      "name": "shopping_item_checks_pkey",
+      "table_name": "shopping_item_checks",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (revision_id) REFERENCES saved_plan_revisions(id) ON DELETE CASCADE",
+      "name": "shopping_item_checks_revision_id_fkey",
+      "table_name": "shopping_item_checks",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (allergen_id) REFERENCES allergens(id) ON DELETE CASCADE",
+      "name": "user_allergies_allergen_id_fkey",
+      "table_name": "user_allergies",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (user_id, allergen_id)",
+      "name": "user_allergies_pkey",
+      "table_name": "user_allergies",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (default_portions >= 1 AND default_portions <= 12)",
+      "name": "user_profiles_default_portions_check",
+      "table_name": "user_profiles",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (user_id)",
+      "name": "user_profiles_pkey",
+      "table_name": "user_profiles",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (user_id, id)",
+      "name": "user_recipes_pkey",
+      "table_name": "user_recipes",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "name": "user_recipes_user_id_fkey",
+      "table_name": "user_recipes",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (day_index >= 0 AND day_index <= 6)",
+      "name": "weekly_plan_slots_day_index_check",
+      "table_name": "weekly_plan_slots",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (meal_index >= 0 AND meal_index <= 2)",
+      "name": "weekly_plan_slots_meal_index_check",
+      "table_name": "weekly_plan_slots",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (weekly_plan_id, day_index, meal_index)",
+      "name": "weekly_plan_slots_pkey",
+      "table_name": "weekly_plan_slots",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (recipe_id) REFERENCES recipes(id)",
+      "name": "weekly_plan_slots_recipe_id_fkey",
+      "table_name": "weekly_plan_slots",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (weekly_plan_id) REFERENCES weekly_plans(id) ON DELETE CASCADE",
+      "name": "weekly_plan_slots_weekly_plan_id_fkey",
+      "table_name": "weekly_plan_slots",
+      "validated": true
+    },
+    {
+      "definition": "FOREIGN KEY (id, published_revision_id) REFERENCES saved_plan_revisions(weekly_plan_id, id)",
+      "name": "fk_weekly_plans_published_revision",
+      "table_name": "weekly_plans",
+      "validated": true
+    },
+    {
+      "definition": "CHECK (draft_portions >= 1 AND draft_portions <= 12)",
+      "name": "weekly_plans_draft_portions_check",
+      "table_name": "weekly_plans",
+      "validated": true
+    },
+    {
+      "definition": "PRIMARY KEY (id)",
+      "name": "weekly_plans_pkey",
+      "table_name": "weekly_plans",
+      "validated": true
+    },
+    {
+      "definition": "UNIQUE (user_id, week_start)",
+      "name": "weekly_plans_user_id_week_start_key",
+      "table_name": "weekly_plans",
+      "validated": true
+    }
+  ],
+  "database": "postgres",
+  "grants": [
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "inventory_items"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "recipe_steps"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "recipes"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "scan_candidates"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "scan_jobs"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "user_allergies"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "user_profiles"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "user_recipes"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "anon",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "authenticated",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "DELETE",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "INSERT",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "REFERENCES",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "SELECT",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRIGGER",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "TRUNCATE",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "postgres",
+      "is_grantable": "YES",
+      "privilege_type": "UPDATE",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "DELETE",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "INSERT",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "REFERENCES",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "SELECT",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRIGGER",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "TRUNCATE",
+      "table_name": "weekly_plans"
+    },
+    {
+      "grantee": "service_role",
+      "is_grantable": "NO",
+      "privilege_type": "UPDATE",
+      "table_name": "weekly_plans"
+    }
+  ],
+  "indexes": [
+    {
+      "definition": "CREATE UNIQUE INDEX allergens_code_key ON public.allergens USING btree (code)",
+      "name": "allergens_code_key",
+      "table_name": "allergens"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX allergens_pkey ON public.allergens USING btree (id)",
+      "name": "allergens_pkey",
+      "table_name": "allergens"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX app_data_mutations_pkey ON public.app_data_mutations USING btree (user_id, mutation_id)",
+      "name": "app_data_mutations_pkey",
+      "table_name": "app_data_mutations"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX app_data_snapshots_pkey ON public.app_data_snapshots USING btree (user_id)",
+      "name": "app_data_snapshots_pkey",
+      "table_name": "app_data_snapshots"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX ingredient_allergens_pkey ON public.ingredient_allergens USING btree (ingredient_id, allergen_id)",
+      "name": "ingredient_allergens_pkey",
+      "table_name": "ingredient_allergens"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX ingredients_normalized_name_key ON public.ingredients USING btree (normalized_name)",
+      "name": "ingredients_normalized_name_key",
+      "table_name": "ingredients"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX ingredients_pkey ON public.ingredients USING btree (id)",
+      "name": "ingredients_pkey",
+      "table_name": "ingredients"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX inventory_items_pkey ON public.inventory_items USING btree (id)",
+      "name": "inventory_items_pkey",
+      "table_name": "inventory_items"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX inventory_items_user_id_normalized_name_unit_code_key ON public.inventory_items USING btree (user_id, normalized_name, unit_code)",
+      "name": "inventory_items_user_id_normalized_name_unit_code_key",
+      "table_name": "inventory_items"
+    },
+    {
+      "definition": "CREATE INDEX ix_inventory_items_user_expiry_date ON public.inventory_items USING btree (user_id, expiry_date)",
+      "name": "ix_inventory_items_user_expiry_date",
+      "table_name": "inventory_items"
+    },
+    {
+      "definition": "CREATE INDEX ix_inventory_items_user_normalized_name ON public.inventory_items USING btree (user_id, normalized_name)",
+      "name": "ix_inventory_items_user_normalized_name",
+      "table_name": "inventory_items"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX recipe_ingredients_pkey ON public.recipe_ingredients USING btree (id)",
+      "name": "recipe_ingredients_pkey",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX recipe_ingredients_recipe_id_position_key ON public.recipe_ingredients USING btree (recipe_id, \"position\")",
+      "name": "recipe_ingredients_recipe_id_position_key",
+      "table_name": "recipe_ingredients"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX recipe_steps_pkey ON public.recipe_steps USING btree (id)",
+      "name": "recipe_steps_pkey",
+      "table_name": "recipe_steps"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX recipe_steps_recipe_id_position_key ON public.recipe_steps USING btree (recipe_id, \"position\")",
+      "name": "recipe_steps_recipe_id_position_key",
+      "table_name": "recipe_steps"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX recipes_pkey ON public.recipes USING btree (id)",
+      "name": "recipes_pkey",
+      "table_name": "recipes"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX saved_plan_revisions_pkey ON public.saved_plan_revisions USING btree (id)",
+      "name": "saved_plan_revisions_pkey",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX saved_plan_revisions_weekly_plan_id_id_key ON public.saved_plan_revisions USING btree (weekly_plan_id, id)",
+      "name": "saved_plan_revisions_weekly_plan_id_id_key",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX saved_plan_revisions_weekly_plan_id_version_key ON public.saved_plan_revisions USING btree (weekly_plan_id, version)",
+      "name": "saved_plan_revisions_weekly_plan_id_version_key",
+      "table_name": "saved_plan_revisions"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX saved_plan_slots_pkey ON public.saved_plan_slots USING btree (revision_id, day_index, meal_index)",
+      "name": "saved_plan_slots_pkey",
+      "table_name": "saved_plan_slots"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX scan_candidates_pkey ON public.scan_candidates USING btree (id)",
+      "name": "scan_candidates_pkey",
+      "table_name": "scan_candidates"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX scan_candidates_scan_job_id_position_key ON public.scan_candidates USING btree (scan_job_id, \"position\")",
+      "name": "scan_candidates_scan_job_id_position_key",
+      "table_name": "scan_candidates"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX scan_jobs_pkey ON public.scan_jobs USING btree (id)",
+      "name": "scan_jobs_pkey",
+      "table_name": "scan_jobs"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX scan_jobs_user_id_idempotency_key_key ON public.scan_jobs USING btree (user_id, idempotency_key)",
+      "name": "scan_jobs_user_id_idempotency_key_key",
+      "table_name": "scan_jobs"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX shopping_item_checks_pkey ON public.shopping_item_checks USING btree (revision_id, ingredient_id, dimension_key)",
+      "name": "shopping_item_checks_pkey",
+      "table_name": "shopping_item_checks"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX user_allergies_pkey ON public.user_allergies USING btree (user_id, allergen_id)",
+      "name": "user_allergies_pkey",
+      "table_name": "user_allergies"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX user_profiles_pkey ON public.user_profiles USING btree (user_id)",
+      "name": "user_profiles_pkey",
+      "table_name": "user_profiles"
+    },
+    {
+      "definition": "CREATE INDEX ix_user_recipes_source ON public.user_recipes USING btree (user_id, source_hash)",
+      "name": "ix_user_recipes_source",
+      "table_name": "user_recipes"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX user_recipes_pkey ON public.user_recipes USING btree (user_id, id)",
+      "name": "user_recipes_pkey",
+      "table_name": "user_recipes"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX weekly_plan_slots_pkey ON public.weekly_plan_slots USING btree (weekly_plan_id, day_index, meal_index)",
+      "name": "weekly_plan_slots_pkey",
+      "table_name": "weekly_plan_slots"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX weekly_plans_pkey ON public.weekly_plans USING btree (id)",
+      "name": "weekly_plans_pkey",
+      "table_name": "weekly_plans"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX weekly_plans_user_id_week_start_key ON public.weekly_plans USING btree (user_id, week_start)",
+      "name": "weekly_plans_user_id_week_start_key",
+      "table_name": "weekly_plans"
+    }
+  ],
+  "migration_sources": {
+    "000_initial_schema.sql": "65f594ec6a9610553af741921ded2a7102b33638cb3d7eb36e06296456491d6b",
+    "001_user_scan_idempotency.sql": "4cc5b91861046cc0ec21f1ba1f8e56dcf2a9d1a16c24e70693c1f021d8537a4f",
+    "002_app_data.sql": "e6298c3cacc0b8649a5b81d6d8f4560ce3bcdf4114d28726798d31ce20723137"
+  },
+  "policies": [],
+  "tables": [
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "allergens",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "app_data_mutations",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "app_data_snapshots",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "ingredient_allergens",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "ingredients",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "inventory_items",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "recipe_ingredients",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "recipe_steps",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "recipes",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "saved_plan_revisions",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "saved_plan_slots",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "scan_candidates",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "scan_jobs",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "shopping_item_checks",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "user_allergies",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "user_profiles",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "user_recipes",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "weekly_plan_slots",
+      "rls": true
+    },
+    {
+      "force_rls": false,
+      "kind": "r",
+      "name": "weekly_plans",
+      "rls": true
+    }
+  ]
+}
