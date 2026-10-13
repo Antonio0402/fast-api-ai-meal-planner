@@ -2,12 +2,14 @@
 
 from datetime import date, datetime
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 SLOT_KEYS = {f"{day}-{meal}" for day in range(7) for meal in range(3)}
 
 
 class Ingredient(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, allow_inf_nan=False)
+
     id: str = Field(min_length=1, max_length=100)
     name: str = Field(min_length=1, max_length=200)
     unit: str = Field(min_length=1, max_length=40)

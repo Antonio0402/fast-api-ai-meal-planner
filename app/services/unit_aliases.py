@@ -41,9 +41,9 @@ def to_base(quantity: float, unit: str) -> BaseQuantity:
 
 
 def from_base(quantity: float, dimension: str) -> tuple[float, str]:
-    rounded_up = ceil(quantity - 1e-9)
+    rounded_up = max(1 if quantity > 0 else 0, ceil(quantity - 1e-9))
     if dimension == "g" and rounded_up >= 1000:
-        return round(quantity / 1000, 1), "kg"
+        return rounded_up / 1000, "kg"
     if dimension == "ml" and rounded_up >= 1000:
-        return round(quantity / 1000, 1), "l"
+        return rounded_up / 1000, "l"
     return rounded_up, dimension

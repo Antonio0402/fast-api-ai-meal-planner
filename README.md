@@ -84,6 +84,7 @@ Kiểm thử xuất OpenAPI và hợp đồng mobile không cần PostgreSQL:
 ```powershell
 $env:DATABASE_URL = 'sqlite+pysqlite:///:memory:'
 python -m unittest tests.test_openapi_export tests.test_mobile_contract -v
+python -m unittest tests.test_recipe_generation -v
 ```
 
 Bộ export chạy trong tiến trình con, chặn kết nối DB/mạng và kiểm tra sinh file
