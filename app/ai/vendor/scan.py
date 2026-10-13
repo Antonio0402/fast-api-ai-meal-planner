@@ -48,7 +48,15 @@ SCAN_RESPONSE_SCHEMA = {
 SCAN_PROMPT = (
     'Return only JSON with shape {"image_quality":"ok|blurry|no_food",'
     '"ingredients":[{"name":"...","confidence":null}]}. '
-    f"List at most {MAX_CANDIDATES} clearly recognized food ingredients, prioritizing "
+    "Inspect the whole image systematically. For a refrigerator, scan the door, "
+    "top shelf, middle shelves, bottom shelf and drawers, checking each region "
+    "from left to right. Look carefully for small or partially occluded foods "
+    "and drinks, and read visible labels in any language when legible. Identify "
+    "partially occluded items only when visible evidence supports their identity. "
+    "Aim to find at least 10 distinct foods or drinks when that many are visible "
+    "and identifiable; return fewer when appropriate and never invent items to "
+    "meet a count. Combine all regions into one deduplicated ingredients array. "
+    f"List at most {MAX_CANDIDATES} clearly recognized foods and drinks, prioritizing "
     "the clearest items when there are more. Write ingredient names in "
     "Vietnamese with correct diacritics. Do not infer quantity, unit, freshness, "
     "hidden items, IDs, comments, or extra fields. Confidence may be null; "

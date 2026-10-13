@@ -305,7 +305,7 @@ def _get_ai_output(image_bytes: bytes, mime_type: str) -> dict[str, Any]:
     return scan_ingredients(
         image_bytes=image_bytes,
         mime_type=mime_type,
-        model_client=create_gemini_client(),
+        model_client=create_gemini_client(for_scan=True),
     )
 
 
