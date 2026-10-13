@@ -5,7 +5,6 @@ import json
 from typing import Any
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -14,22 +13,9 @@ from app.ai.errors import meal_generation_error
 from app.core.errors import APIError
 from app.core.normalization import normalize_name
 from app.schemas.app_data import Ingredient
+from app.schemas.recipe import GeneratedRecipe, RecipeItem
 from app.services.db_utils import fetch_all
 from app.services.unit_aliases import to_base
-
-
-class RecipeItem(BaseModel):
-    name: str = Field(min_length=1, max_length=200)
-    quantity: float = Field(gt=0)
-    unit: str = Field(min_length=1, max_length=40)
-
-
-class GeneratedRecipe(BaseModel):
-    title: str = Field(min_length=1, max_length=200)
-    minutes: int = Field(gt=0, le=240)
-    servings: int = Field(ge=1, le=12)
-    items: list[RecipeItem] = Field(min_length=1)
-    steps: list[str] = Field(min_length=1)
 
 
 def _source_hash(inventory: list[Ingredient], allergies: list[str]) -> str:

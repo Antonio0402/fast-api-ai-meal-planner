@@ -9,7 +9,7 @@ from app.core.auth import get_current_user
 from app.core.errors import APIError
 from app.core.image_storage import delete_scan_image
 from app.db.session import get_db
-from app.schemas.scan import ScanConfirmInput
+from app.schemas.scan import ScanCandidate, ScanConfirmInput
 from app.services.scan_service import (
     _ERROR_MESSAGES,
     _get_ai_output,
@@ -27,7 +27,7 @@ from app.services.scan_service import (
 router = APIRouter()
 
 
-@router.post("/detect")
+@router.post("/detect", response_model=list[ScanCandidate], response_model_exclude_unset=True)
 async def detect_for_mobile(
     file: UploadFile = File(...),
     _: str = Depends(get_current_user),

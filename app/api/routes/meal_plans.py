@@ -11,7 +11,7 @@ from app.core.auth import get_current_user
 from app.core.errors import APIError
 from app.core.normalization import normalize_name
 from app.db.session import get_db
-from app.schemas.app_data import Ingredient, SavedPlan
+from app.schemas.app_data import Ingredient, SavedPlan, ShoppingItem
 from app.schemas.weekly_plan import (
     DraftPlanInput,
     GeneratePlanInput,
@@ -47,7 +47,7 @@ class BuildShoppingInput(BaseModel):
     inventory: list[Ingredient]
 
 
-@router.post("/generate-from-inventory")
+@router.post("/generate-from-inventory", response_model=dict[str, str])
 def generate_from_inventory(
     payload: GenerateFromInventoryInput,
     user_id: str = Depends(get_current_user),
@@ -59,7 +59,7 @@ def generate_from_inventory(
     return generate_ai_slots(recipes, portions=payload.portions, week_start=payload.weekStart)
 
 
-@router.post("/shopping/build")
+@router.post("/shopping/build", response_model=list[ShoppingItem])
 def build_shopping_from_plan(
     payload: BuildShoppingInput,
     user_id: str = Depends(get_current_user),

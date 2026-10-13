@@ -4,6 +4,12 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from app.schemas.app_data import Ingredient
+
+
+class ScanCandidate(Ingredient):
+    unit: str = Field(max_length=40)
+
 
 class ScanConfirmItem(BaseModel):
     model_config = ConfigDict(extra="forbid")

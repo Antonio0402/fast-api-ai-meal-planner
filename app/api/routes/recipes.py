@@ -11,6 +11,7 @@ from app.core.auth import get_current_user
 from app.core.normalization import normalize_name
 from app.db.session import get_db
 from app.schemas.app_data import Ingredient
+from app.schemas.recipe import Recipe, RecipeMatch
 from app.services.db_utils import fetch_all
 from app.services.recipe_generation import generate_recipes
 from app.services.unit_aliases import to_base
@@ -33,7 +34,7 @@ class RecipeIdsInput(BaseModel):
     ids: list[UUID] = Field(max_length=21)
 
 
-@router.post("/by-ids")
+@router.post("/by-ids", response_model=list[Recipe])
 def user_recipes_by_ids(
     payload: RecipeIdsInput,
     user_id: str = Depends(get_current_user),
@@ -48,7 +49,7 @@ def user_recipes_by_ids(
     return [row["recipe"] for row in rows]
 
 
-@router.post("/generated")
+@router.post("/generated", response_model=list[Recipe])
 def generated_recipes(
     payload: RecipeSourceInput,
     user_id: str = Depends(get_current_user),
@@ -57,7 +58,7 @@ def generated_recipes(
     return generate_recipes(db, user_id, payload.inventory, payload.allergies)
 
 
-@router.post("/match")
+@router.post("/match", response_model=list[RecipeMatch], response_model_exclude_unset=True)
 def match_recipes(
     payload: MatchInput,
     user_id: str = Depends(get_current_user),
