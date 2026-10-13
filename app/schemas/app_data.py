@@ -51,3 +51,17 @@ class AppData(BaseModel):
         if len({item.id for item in value}) != len(value):
             raise ValueError("Duplicate inventory ID")
         return value
+
+
+class AppDataResponse(BaseModel):
+    data: AppData
+    revision: int = Field(ge=0)
+
+
+class ShoppingItem(BaseModel):
+    key: str = Field(min_length=1)
+    name: str = Field(min_length=1)
+    unit: str = Field(min_length=1)
+    toBuy: float = Field(ge=0)
+    group: str = Field(min_length=1)
+    check: bool

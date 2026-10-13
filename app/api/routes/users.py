@@ -11,14 +11,14 @@ from sqlalchemy.orm import Session
 from app.core.auth import get_current_user
 from app.core.errors import APIError
 from app.db.session import get_db
-from app.schemas.app_data import AppData
+from app.schemas.app_data import AppData, AppDataResponse
 from app.schemas.profile import ProfilePatch
 from app.services.db_utils import fetch_one
 
 router = APIRouter()
 
 
-@router.get("/me/data")
+@router.get("/me/data", response_model=AppDataResponse, response_model_exclude_unset=True)
 def get_app_data(
     user_id: str = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -35,7 +35,7 @@ def get_app_data(
                      "slots": {}, "checked": {}}, "revision": 0}
 
 
-@router.put("/me/data")
+@router.put("/me/data", response_model=AppDataResponse, response_model_exclude_unset=True)
 def put_app_data(
     payload: AppData,
     if_match: Annotated[str, Header(alias="If-Match")],
