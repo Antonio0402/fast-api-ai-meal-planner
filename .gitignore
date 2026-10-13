@@ -9,3 +9,4 @@ __pycache__/
 /var/
 supabase/.temp/
 /tests/*
+/.idea/*
