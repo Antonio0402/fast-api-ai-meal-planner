@@ -1,4 +1,3 @@
-from math import ceil
 from typing import Any
 from uuid import UUID
 
@@ -8,14 +7,14 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.core.auth import get_current_user
-from app.core.errors import AI_ERROR_RESPONSES
+from app.core.errors import AI_ERROR_RESPONSES, APIError
 from app.core.normalization import normalize_name
 from app.db.session import get_db
 from app.schemas.app_data import Ingredient
 from app.schemas.recipe import Recipe, RecipeMatch
 from app.services.db_utils import fetch_all
 from app.services.recipe_generation import generate_recipes
-from app.services.unit_aliases import to_base
+from app.services.unit_aliases import from_base, to_base
 
 router = APIRouter()
 
@@ -47,7 +46,10 @@ def user_recipes_by_ids(
         SELECT recipe FROM user_recipes
         WHERE user_id = :user_id AND id = ANY(:ids)
         """, {"user_id": user_id, "ids": payload.ids})
-    return [row["recipe"] for row in rows]
+    try:
+        return [Recipe.model_validate(row["recipe"]).model_dump() for row in rows]
+    except ValueError as exc:
+        raise APIError(422, "RECIPE_INVALID", "Công thức cũ không hợp lệ. Hãy chọn món mới.") from exc
 
 
 @router.post("/generated", response_model=list[Recipe], responses=AI_ERROR_RESPONSES)
@@ -75,20 +77,21 @@ def match_recipes(
             entry["units"][base.dimension] = entry["units"].get(base.dimension, 0) + base.quantity
     matches = []
     for recipe in generate_recipes(db, user_id, payload.inventory, payload.allergies):
+        recipe = Recipe.model_validate(recipe).model_dump()
         scaled = []
         missing = []
         coverage = 0.0
         for item in recipe["items"]:
-            quantity = ceil(item["quantity"] * payload.portions / recipe["servings"] - 1e-9)
-            base = to_base(quantity, item["unit"])
+            required = to_base(item["quantity"] * payload.portions / recipe["servings"], item["unit"])
+            quantity, unit = from_base(required.quantity, required.dimension)
+            base = to_base(quantity, unit)
             entry = stock.get(normalize_name(item["name"]))
             have = entry["units"].get(base.dimension, 0) if entry else 0
             coverage += min(1.0, have / base.quantity)
-            scaled.append({"name": item["name"], "quantity": quantity, "unit": item["unit"]})
-            if have < base.quantity:
-                unit_base = to_base(1, item["unit"]).quantity
-                gap = ceil((base.quantity - have) / unit_base - 1e-9)
-                remainder = {"name": item["name"], "quantity": gap, "unit": item["unit"]}
+            scaled.append({"name": item["name"], "quantity": quantity, "unit": unit})
+            if have < base.quantity - 1e-9:
+                gap, gap_unit = from_base(base.quantity - have, base.dimension)
+                remainder = {"name": item["name"], "quantity": gap, "unit": gap_unit}
                 if entry and (entry["unknown"] or (entry["units"] and base.dimension not in entry["units"])):
                     remainder["check"] = True
                 missing.append(remainder)

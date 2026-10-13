@@ -9,4 +9,5 @@ __pycache__/
 /var/
 supabase/.temp/
 /tests/*
+!/tests/test_recipe_generation.py
 /.idea/*

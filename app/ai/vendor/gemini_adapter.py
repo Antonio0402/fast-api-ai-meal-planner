@@ -104,11 +104,14 @@ class GeminiAdapter:
             }
         )
 
-    def generate_text(self, prompt: str) -> str:
+    def generate_text(self, prompt: str, *, response_schema: Mapping[str, Any] | None = None) -> str:
+        config: dict[str, Any] = {"responseMimeType": "application/json"}
+        if response_schema is not None:
+            config["responseJsonSchema"] = dict(response_schema)
         return self._generate(
             {
                 "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-                "generationConfig": {"responseMimeType": "application/json"},
+                "generationConfig": config,
             }
         )
 
