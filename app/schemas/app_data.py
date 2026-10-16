@@ -4,6 +4,8 @@ from datetime import date, datetime
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from app.services.allergy import AllergyList
+
 SLOT_KEYS = {f"{day}-{meal}" for day in range(7) for meal in range(3)}
 
 
@@ -34,7 +36,7 @@ class SavedPlan(BaseModel):
 class AppData(BaseModel):
     inventory: list[Ingredient]
     portions: int = Field(ge=1, le=12)
-    allergies: list[str]
+    allergies: AllergyList
     weekStart: date
     slots: dict[str, str]
     savedPlan: SavedPlan | None = None

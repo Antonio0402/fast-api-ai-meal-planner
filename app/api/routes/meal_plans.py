@@ -18,6 +18,7 @@ from app.schemas.weekly_plan import (
     PublishPlanInput,
     ShoppingChecksInput,
 )
+from app.services.allergy import AllergyList
 from app.services.db_utils import fetch_all, fetch_one
 from app.services.recipe_generation import generate_recipes
 from app.services.unit_aliases import from_base, to_base
@@ -37,7 +38,7 @@ router = APIRouter()
 
 class GenerateFromInventoryInput(BaseModel):
     inventory: list[Ingredient]
-    allergies: list[str]
+    allergies: AllergyList
     portions: int = Field(ge=1, le=12)
     weekStart: date | None = None
 

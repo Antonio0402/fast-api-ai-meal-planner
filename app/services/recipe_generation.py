@@ -15,10 +15,16 @@ from app.core.errors import APIError
 from app.core.normalization import normalize_name
 from app.schemas.app_data import Ingredient
 from app.schemas.recipe import GeneratedRecipe, Recipe
+from app.services.allergy import expand_allergy_terms, find_allergy_term, normalize_allergies
 from app.services.db_utils import fetch_all
 from app.services.unit_aliases import to_base
 
-RECIPE_BATCH = TypeAdapter(Annotated[list[GeneratedRecipe], Field(min_length=1, max_length=5)])
+MIN_RECIPES = 7
+MAX_RECIPES = 21
+FULL_PLAN_CAPACITY_RATIO = 0.6
+RECIPE_BATCH = TypeAdapter(
+    Annotated[list[GeneratedRecipe], Field(min_length=MIN_RECIPES, max_length=MAX_RECIPES)]
+)
 
 
 def _validate_inventory(recipes: list[GeneratedRecipe], allowed: set[tuple[str, str]]) -> None:
@@ -28,14 +34,26 @@ def _validate_inventory(recipes: list[GeneratedRecipe], allowed: set[tuple[str, 
                 raise ValueError('AI dùng nguyên liệu hoặc đơn vị ngoài kho đã xác nhận.')
 
 
-def _cached_recipes(rows: list[dict[str, Any]], allowed: set[tuple[str, str]]) -> list[dict[str, Any]]:
-    if not 1 <= len(rows) <= 5:
+def _validate_allergies(recipes: list[GeneratedRecipe], terms: list[str]) -> None:
+    if not terms:
+        return
+    for recipe in recipes:
+        for value in (recipe.title, *(item.name for item in recipe.items), *recipe.steps):
+            if find_allergy_term(value, terms):
+                raise ValueError('AI tạo công thức chứa thành phần gây dị ứng.')
+
+
+def _cached_recipes(
+    rows: list[dict[str, Any]], allowed: set[tuple[str, str]], terms: list[str]
+) -> list[dict[str, Any]]:
+    if not MIN_RECIPES <= len(rows) <= MAX_RECIPES:
         return []
     try:
         recipes = [Recipe.model_validate(row['recipe']) for row in rows]
         for recipe in recipes:
             UUID(recipe.id)
         _validate_inventory(recipes, allowed)
+        _validate_allergies(recipes, terms)
         return [recipe.model_dump() for recipe in recipes]
     except (ValueError, KeyError, TypeError):
         # Cache cũ phải vượt qua cùng validation trước khi trả về mobile.
@@ -49,27 +67,31 @@ def _source_hash(inventory: list[Ingredient], allergies: list[str]) -> str:
               "unit": item.unit} for item in inventory],
             key=lambda item: (item["name"], item["unit"]),
         ),
-        "allergies": sorted(set(allergies)),
+        "allergies": sorted(set(normalize_allergies(allergies))),
     }
     return hashlib.sha256(json.dumps(source, sort_keys=True).encode()).hexdigest()
 
 
 def _safe_inventory(db: Session, inventory: list[Ingredient], allergies: list[str]) -> list[Ingredient]:
-    if not allergies:
+    terms = expand_allergy_terms(allergies)
+    if not terms:
         return inventory
+    codes = {normalize_name(allergy) for allergy in normalize_allergies(allergies)}
     names = [normalize_name(item.name) for item in inventory]
     rows = fetch_all(db, """
-        SELECT i.normalized_name, array_remove(array_agg(a.code), NULL) AS allergens
+        SELECT i.normalized_name,
+               array_remove(array_agg(a.code) || array_agg(a.name), NULL) AS allergens
         FROM ingredients i
         LEFT JOIN ingredient_allergens ia ON ia.ingredient_id = i.id
         LEFT JOIN allergens a ON a.id = ia.allergen_id
         WHERE i.normalized_name = ANY(:names)
         GROUP BY i.id
         """, {"names": names})
-    known = {row["normalized_name"]: set(row["allergens"]) for row in rows}
+    known = {row["normalized_name"]: {normalize_name(value) for value in row["allergens"]}
+             for row in rows}
     return [item for item in inventory
-            if normalize_name(item.name) in known
-            and not known[normalize_name(item.name)] & set(allergies)]
+            if not find_allergy_term(item.name, terms)
+            and not known.get(normalize_name(item.name), set()) & codes]
 
 
 def list_generated_recipes(db: Session, user_id: str) -> list[dict[str, Any]]:
@@ -88,33 +110,62 @@ def generate_recipes(
     safe = _safe_inventory(db, inventory, allergies)
     if not safe:
         raise APIError(422, "NO_SAFE_INGREDIENTS", "Chưa có nguyên liệu được xác nhận an toàn với dị ứng.")
+    terms = expand_allergy_terms(allergies)
     allowed = {(normalize_name(item.name), to_base(1, item.unit).dimension) for item in safe}
     source_hash = _source_hash(inventory, allergies)
     existing = fetch_all(db, """
         SELECT recipe FROM user_recipes
         WHERE user_id = :user_id AND source_hash = :source_hash ORDER BY created_at, id
         """, {"user_id": user_id, "source_hash": source_hash})
-    cached = _cached_recipes(existing, allowed)
+    cached = _cached_recipes(existing, allowed, terms)
     if cached:
         return cached
     # Kết thúc transaction đọc trước khi chờ dịch vụ AI.
     db.commit()
+    allergy_rule = (
+        "MANDATORY ALLERGY RULE: The user is allergic to the items in Allergies. "
+        "Always strictly respect this allergy_rule with highest priority: never use, suggest, "
+        "substitute, or mention any item in Allergies, any ingredient in AvoidTerms, "
+        "or any ingredient derived from them, including in recipe titles, ingredient items, "
+        "and cooking steps. Verify every recipe against Allergies and AvoidTerms before returning. "
+        "Recipes are suggestions; do not claim allergy safety. "
+        f"Allergies: {json.dumps(normalize_allergies(allergies), ensure_ascii=False)}. "
+        f"AvoidTerms: {json.dumps(terms, ensure_ascii=False)}. "
+    ) if terms else (
+        "Allergy rule: No specific allergens declared, use only the confirmed safe inventory. "
+    )
+    has_full_week_capacity = len(safe) > (MAX_RECIPES * FULL_PLAN_CAPACITY_RATIO)
+    capacity_rule = (
+        f"The current confirmed inventory has {len(safe)} safe ingredients, which is more than "
+        f"60% capacity for creating {MAX_RECIPES} recipes: you MUST try to create a full set of "
+        f"{MAX_RECIPES} different practical recipes (3 meals/day for 7 days). "
+        if has_full_week_capacity else
+        f"The current confirmed inventory has {len(safe)} safe ingredients: create at least "
+        f"{MIN_RECIPES} practical recipes for rotating on the weekplan (at least 1 recipe a day), "
+        f"and always try to create up to {MAX_RECIPES} different recipes if the inventory "
+        f"ingredients have more than 60% capacity to support {MAX_RECIPES} different recipes. "
+    )
     prompt = (
-        "Return ONLY a JSON array with 1 to 5 practical recipes. Each recipe has "
-        "title, minutes, servings, items (name, quantity, unit), and steps. "
+        f"Return ONLY a JSON array with {MIN_RECIPES} to {MAX_RECIPES} different practical recipes "
+        f"for rotating on a 7-day weekplan (minimum {MIN_RECIPES} practical recipes, which is at "
+        f"least 1 recipe a day; always try to create a full {MAX_RECIPES} different recipes when "
+        "the current number of inventory ingredients has more than 60% capacity for creating "
+        f"full {MAX_RECIPES} different recipes). "
+        f"{capacity_rule}"
+        f"Always respect the allergy_rule in every recipe. {allergy_rule}"
+        "Each recipe must be distinct and have title, minutes, servings, items (name, quantity, unit), and steps. "
         "Use only ingredient names from this confirmed inventory. Do not add pantry items. "
         "Write titles and cooking steps in Vietnamese. Preserve the inventory ingredient names. "
         "List each ingredient once with its total quantity and a compatible unit. "
         "Steps must refer to the ingredient list rather than repeat fixed quantities, "
         "because the app scales quantities for the selected servings. "
-        "Honor these allergies. Recipes are suggestions; do not claim allergy safety. "
-        f"Inventory: {json.dumps([item.model_dump(exclude_none=True) for item in safe], ensure_ascii=False)}. "
-        f"Allergies: {json.dumps(allergies, ensure_ascii=False)}"
+        f"Inventory: {json.dumps([item.model_dump(exclude_none=True) for item in safe], ensure_ascii=False)}."
     )
     try:
         raw = create_gemini_client().generate_text(prompt, response_schema=RECIPE_BATCH.json_schema())
         parsed = RECIPE_BATCH.validate_json(raw)
         _validate_inventory(parsed, allowed)
+        _validate_allergies(parsed, terms)
     except APIError:
         raise
     except Exception as exc:
@@ -127,7 +178,7 @@ def generate_recipes(
             SELECT recipe FROM user_recipes
             WHERE user_id = :user_id AND source_hash = :source_hash ORDER BY created_at, id
             """, {"user_id": user_id, "source_hash": source_hash})
-        cached = _cached_recipes(existing, allowed)
+        cached = _cached_recipes(existing, allowed, terms)
         if cached:
             return cached
         if existing:

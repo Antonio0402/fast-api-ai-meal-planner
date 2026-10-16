@@ -12,6 +12,7 @@ from app.core.normalization import normalize_name
 from app.db.session import get_db
 from app.schemas.app_data import Ingredient
 from app.schemas.recipe import Recipe, RecipeMatch
+from app.services.allergy import AllergyList
 from app.services.db_utils import fetch_all
 from app.services.recipe_generation import generate_recipes
 from app.services.unit_aliases import from_base, to_base
@@ -22,12 +23,12 @@ router = APIRouter()
 class MatchInput(BaseModel):
     inventory: list[Ingredient]
     portions: int = Field(ge=1, le=12)
-    allergies: list[str]
+    allergies: AllergyList
 
 
 class RecipeSourceInput(BaseModel):
     inventory: list[Ingredient]
-    allergies: list[str]
+    allergies: AllergyList
 
 
 class RecipeIdsInput(BaseModel):
