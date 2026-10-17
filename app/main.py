@@ -26,6 +26,7 @@ install_error_handlers(app)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[origin.strip() for origin in settings.web_origins.split(",") if origin.strip()],
+    allow_origin_regex=settings.cors_origin_regex,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
     allow_headers=["Authorization", "Content-Type", "If-Match", "Idempotency-Key"],
 )

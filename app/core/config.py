@@ -5,6 +5,9 @@ class Settings(BaseSettings):
     database_url: str
     is_mocking: bool = False
     web_origins: str = "http://localhost:8081,http://127.0.0.1:8081"
+    cors_origin_regex: str | None = (
+        r"^https?://(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+|100\.(6[4-9]|[7-9]\d|1[0-1]\d|12[0-7])\.\d+\.\d+)(:\d+)?$"
+    )
     supabase_url: str = ""
     supabase_jwt_secret: str | None = None
     gemini_api_key: str = ""

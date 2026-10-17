@@ -30,11 +30,14 @@ owns login, while the mobile application calls the versioned API routes.
 4. Start the API:
 
    ```powershell
-   uvicorn app.main:app --reload
+   python -m scripts.run_dev
+   # Hoặc: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
    ```
 
    Interactive OpenAPI is available at `/docs`; the internal health endpoint
-   is `/health`.
+   is `/health`. Để thiết bị di động (Expo Go) kết nối được, server cần lắng nghe
+   trên `0.0.0.0` (thay vì 127.0.0.1) và Windows Defender Firewall cần cho phép
+   cổng 8000 trên mạng Private.
 
 The mobile app calls the versioned routes in `app/api/routes/`: snapshot sync
 under `users`, AI recipes under `recipes`, plan/shopping under `meal_plans`, and
@@ -42,7 +45,8 @@ image detection under `scan_jobs`. Confirmed inventory drives recipe generation;
 the backend does not seed a fixed catalog in live mode. The app's
 `EXPO_PUBLIC_IS_MOCKING` and backend `IS_MOCKING` must both be `true` to use
 their respective mock data. Native devices need a reachable HTTPS or LAN API
-origin rather than `127.0.0.1`.
+origin rather than `127.0.0.1`. Khi chạy dev với Expo Go, mobile app tự động
+nhận diện IP LAN máy chủ dev từ Metro bundler.
 
 ## Xuất hợp đồng OpenAPI
 
