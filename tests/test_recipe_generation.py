@@ -230,6 +230,33 @@ class RecipeGenerationTests(unittest.TestCase):
                 self.generate(error=error)
             self.assertEqual((caught.exception.code, caught.exception.status_code), (code, status))
 
+    def test_pantry_fats_and_false_positive_allergies_and_partial_batch_recovery(self):
+        recipe_with_butter = {
+            **RECIPE,
+            'title': 'Rau xào bơ tỏi',
+            'items': [
+                {'name': 'Rau', 'quantity': 0.3, 'unit': 'kg'},
+                {'name': 'bơ', 'quantity': 10, 'unit': 'g'},
+                {'name': 'tỏi băm', 'quantity': 5, 'unit': 'g'},
+            ],
+            'steps': [
+                'Phi thơm 2 tép tỏi băm để giữ vị ngọt của rau.',
+                'Trải đều ra đĩa, nêm 1 thìa nước mắm và chút mì chính theo khẩu vị cá nhân.',
+            ],
+        }
+        bad_recipe = {
+            **RECIPE,
+            'title': 'Tôm hấp',
+            'items': [{'name': 'Rau', 'quantity': 0.3, 'unit': 'kg'}],
+        }
+        mixed_batch = [recipe_with_butter] * 6 + [bad_recipe]
+        result, _, _ = self.run_with_allergies(INVENTORY, ['Hải sản', 'cá', 'gluten'], mixed_batch)
+        self.assertEqual(len(result), 7)
+        self.assertEqual(result[0]['items'], [{'name': 'Rau', 'quantity': 0.3, 'unit': 'kg'}])
+        self.assertNotIn('nước mắm', result[0]['steps'][1].lower())
+        self.assertTrue(all('Tôm' not in r['title'] for r in result))
+
 
 if __name__ == '__main__':
     unittest.main()
+

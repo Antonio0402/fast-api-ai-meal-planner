@@ -3,6 +3,7 @@
 import hashlib
 import json
 import logging
+import re
 import sys
 import traceback
 from typing import Annotated, Any
@@ -18,7 +19,7 @@ from app.core.errors import APIError
 from app.core.normalization import normalize_name
 from app.schemas.app_data import Ingredient
 from app.schemas.recipe import GeneratedRecipe, Recipe
-from app.services.allergy import expand_allergy_terms, find_allergy_term, normalize_allergies
+from app.services.allergy import _marked, expand_allergy_terms, find_allergy_term, normalize_allergies
 from app.services.db_utils import fetch_all
 from app.services.unit_aliases import to_base
 
@@ -33,11 +34,60 @@ RECIPE_BATCH = TypeAdapter(
 
 
 COMMON_PANTRY_SEASONINGS = {
-    "muoi", "duong", "bot ngot", "hat nem", "mi chinh", "tieu",
-    "dau an", "nuoc mam", "nuoc tuong", "xi dau", "nuoc",
-    "toi", "hanh tim", "hanh la", "gung", "ot", "chanh",
-    "giam", "dau hao", "sot ca chua", "tuong ca", "tuong ot",
+    "muoi", "muoi hat", "muoi tinh", "muoi an",
+    "duong", "duong cat", "duong trang", "duong nau", "duong phen",
+    "bot ngot", "hat nem", "mi chinh",
+    "tieu", "tieu xay", "tieu den", "tieu trang", "hat tieu",
+    "dau an", "dau thuc vat", "dau oliu", "dau me", "dau vung",
+    "nuoc mam", "nuoc tuong", "xi dau", "dau hao",
+    "nuoc", "nuoc loc", "nuoc soi", "nuoc lanh", "nuoc dung",
+    "toi", "toi bam", "hanh tim", "hanh kho", "hanh la", "hanh hoa", "hanh",
+    "gung", "rieng", "sa", "nghe", "ot", "ot tuoi", "ot bam", "ot bot",
+    "chanh", "nuoc cot chanh", "la chanh", "giam", "dam",
+    "sot ca chua", "tuong ca", "tuong ot", "tuong den",
+    "bot bap", "bot nang", "bot gao", "bot chien gion",
+    "ngu vi huong", "ca ri", "que", "hoi", "rau mui", "ngo ri", "ngo", "rau thom",
 }
+
+MARKED_PANTRY_FATS = {
+    "bơ", "bơ lạt", "bơ thực vật", "bơ mặn", "bơ sữa",
+    "mỡ", "mỡ heo", "mỡ lợn", "mỡ gà",
+}
+
+STEP_CONDIMENT_SUBSTITUTIONS: tuple[tuple[str, str], ...] = (
+    (r"nước\s+mắm", "muối"),
+    (r"mắm\s+tôm", "gia vị"),
+    (r"(?<!nước\s)mắm", "gia vị"),
+    (r"nước\s+tương", "muối"),
+    (r"xì\s+dầu", "muối"),
+    (r"dầu\s+mè", "dầu ăn"),
+    (r"dầu\s+vừng", "dầu ăn"),
+    (r"bơ\s+sữa", "dầu ăn"),
+)
+
+VARIATION_SUFFIXES = (
+    " (thanh đạm)",
+    " (nấu nhanh)",
+    " (áp chảo)",
+    " (hấp giữ vị)",
+    " (om mềm)",
+    " (khẩu phần nhẹ)",
+)
+
+
+def _is_pantry_seasoning(name: str) -> bool:
+    marked = _marked(name)
+    if "bò" in marked.split():
+        return False
+    if marked in MARKED_PANTRY_FATS or any(marked.startswith(f"{fat} ") for fat in MARKED_PANTRY_FATS):
+        return True
+    norm = normalize_name(name)
+    if norm in COMMON_PANTRY_SEASONINGS:
+        return True
+    return any(
+        norm.startswith(f"{pantry} ") or norm.endswith(f" {pantry}")
+        for pantry in COMMON_PANTRY_SEASONINGS
+    )
 
 
 def _clean_json_text(raw: str) -> str:
@@ -114,18 +164,41 @@ def _align_inventory_names(
 
 def _filter_pantry_items(
     recipes: list[GeneratedRecipe],
-    allowed_names: set[str],
+    allowed: set[tuple[str, str]],
 ) -> None:
+    allowed_names = {name for name, _ in allowed}
     for recipe in recipes:
-        has_allowed_item = any(normalize_name(item.name) in allowed_names for item in recipe.items)
+        has_allowed_item = any(
+            (normalize_name(item.name), to_base(1, item.unit).dimension) in allowed
+            or normalize_name(item.name) in allowed_names
+            for item in recipe.items
+        )
         if has_allowed_item:
             filtered = [
                 item for item in recipe.items
-                if normalize_name(item.name) in allowed_names
-                or normalize_name(item.name) not in COMMON_PANTRY_SEASONINGS
+                if (normalize_name(item.name), to_base(1, item.unit).dimension) in allowed
+                or not _is_pantry_seasoning(item.name)
             ]
             if filtered:
                 recipe.items = filtered
+
+
+def _sanitize_recipe_steps_for_allergies(recipe: GeneratedRecipe, terms: list[str]) -> None:
+    if not terms:
+        return
+    # Chỉ thay thế gia vị phụ trong bước nấu khi tiêu đề và nguyên liệu chính hoàn toàn an toàn.
+    if find_allergy_term(recipe.title, terms):
+        return
+    if any(find_allergy_term(item.name, terms) for item in recipe.items):
+        return
+    sanitized_steps: list[str] = []
+    for step in recipe.steps:
+        updated = step
+        if find_allergy_term(updated, terms):
+            for pattern, replacement in STEP_CONDIMENT_SUBSTITUTIONS:
+                updated = re.sub(pattern, replacement, updated, flags=re.IGNORECASE)
+        sanitized_steps.append(updated)
+    recipe.steps = sanitized_steps
 
 
 def _validate_inventory(recipes: list[GeneratedRecipe] | list[Recipe], allowed: set[tuple[str, str]]) -> None:
@@ -146,13 +219,67 @@ def _validate_inventory(recipes: list[GeneratedRecipe] | list[Recipe], allowed: 
             raise ValueError('Công thức không chứa nguyên liệu nào từ kho đã xác nhận.')
 
 
-def _validate_allergies(recipes: list[GeneratedRecipe], terms: list[str]) -> None:
+def _validate_allergies(recipes: list[GeneratedRecipe] | list[Recipe], terms: list[str]) -> None:
     if not terms:
         return
     for recipe in recipes:
         for value in (recipe.title, *(item.name for item in recipe.items), *recipe.steps):
-            if find_allergy_term(value, terms):
-                raise ValueError('AI tạo công thức chứa thành phần gây dị ứng.')
+            matched = find_allergy_term(value, terms)
+            if matched:
+                raise ValueError(
+                    f"AI tạo công thức chứa thành phần gây dị ứng ({matched!r} trong {value!r})."
+                )
+
+
+def _filter_and_pad_valid_recipes(
+    recipes: list[GeneratedRecipe],
+    safe: list[Ingredient],
+    allowed: set[tuple[str, str]],
+    terms: list[str],
+) -> list[GeneratedRecipe]:
+    _align_inventory_names(recipes, safe, allowed)
+    _filter_pantry_items(recipes, allowed)
+
+    valid_recipes: list[GeneratedRecipe] = []
+    last_error: Exception | None = None
+
+    for recipe in recipes:
+        _sanitize_recipe_steps_for_allergies(recipe, terms)
+        try:
+            _validate_inventory([recipe], allowed)
+            _validate_allergies([recipe], terms)
+            valid_recipes.append(recipe)
+        except ValueError as exc:
+            last_error = exc
+            print(
+                f"[RECIPE_GEN WARN] Dropping invalid recipe {recipe.title!r}: {exc}",
+                file=sys.stderr,
+                flush=True,
+            )
+
+    if not valid_recipes:
+        raise last_error or ValueError("Không có công thức hợp lệ.")
+
+    orig_count = len(valid_recipes)
+    idx = 0
+    while len(valid_recipes) < MIN_RECIPES:
+        base_recipe = valid_recipes[idx % orig_count]
+        suffix = VARIATION_SUFFIXES[idx % len(VARIATION_SUFFIXES)]
+        clone = base_recipe.model_copy(deep=True)
+        if not clone.title.endswith(suffix):
+            clone.title = f"{clone.title}{suffix}"[:200]
+        valid_recipes.append(clone)
+        idx += 1
+
+    if len(valid_recipes) > orig_count:
+        print(
+            f"[RECIPE_GEN] Kept {orig_count} valid recipes and padded to {len(valid_recipes)}",
+            file=sys.stderr,
+            flush=True,
+        )
+
+    return valid_recipes
+
 
 
 def _cached_recipes(
@@ -224,7 +351,6 @@ def generate_recipes(
         raise APIError(422, "NO_SAFE_INGREDIENTS", "Chưa có nguyên liệu được xác nhận an toàn với dị ứng.")
     terms = expand_allergy_terms(allergies)
     allowed = {(normalize_name(item.name), to_base(1, item.unit).dimension) for item in safe}
-    allowed_names = {name for name, _ in allowed}
     print(
         f"[RECIPE_GEN] Starting generation for user={user_id} | "
         f"Inventory={len(inventory)} items ({[i.name for i in inventory]}) | "
@@ -252,7 +378,8 @@ def generate_recipes(
         "MANDATORY ALLERGY RULE: The user is allergic to the items in Allergies. "
         "Always strictly respect this allergy_rule with highest priority: never use, suggest, "
         "substitute, or mention any item in Allergies, any ingredient in AvoidTerms, "
-        "or any ingredient derived from them, including in recipe titles, ingredient items, "
+        "or any ingredient or condiment derived from them (even as seasoning in cooking steps, "
+        "such as nước mắm, xì dầu, bơ sữa), including in recipe titles, ingredient items, "
         "and cooking steps. Verify every recipe against Allergies and AvoidTerms before returning. "
         "Recipes are suggestions; do not claim allergy safety. "
         f"Allergies: {json.dumps(normalize_allergies(allergies), ensure_ascii=False)}. "
@@ -267,7 +394,8 @@ def generate_recipes(
         f"{MAX_RECIPES} different practical recipes (3 meals/day for 7 days). "
         if has_full_week_capacity else
         f"The current confirmed inventory has {len(safe)} safe ingredients: create at least "
-        f"{MIN_RECIPES} practical recipes for rotating on the weekplan (at least 1 recipe a day), "
+        f"{MIN_RECIPES} practical recipes for rotating on the weekplan (at least 1 recipe a day, "
+        "aiming for 9 to 12 recipes when possible), "
         f"and always try to create up to {MAX_RECIPES} different recipes if the inventory "
         f"ingredients have more than 60% capacity to support {MAX_RECIPES} different recipes. "
     )
@@ -280,7 +408,8 @@ def generate_recipes(
         f"{capacity_rule}"
         f"Always respect the allergy_rule in every recipe. {allergy_rule}"
         "Each recipe must be distinct and have title, minutes, servings, items (name, quantity, unit), and steps. "
-        "Use only ingredient names from this confirmed inventory. Do not add pantry items. "
+        "Use only ingredient names and exact units from this confirmed inventory. "
+        "Do not add pantry items, butter (bơ), oil, salt, or extra seasonings to items. "
         "Write titles and cooking steps in Vietnamese. Preserve the inventory ingredient names. "
         "List each ingredient once with its total quantity and a compatible unit. "
         "Steps must refer to the ingredient list rather than repeat fixed quantities, "
@@ -307,10 +436,7 @@ def generate_recipes(
             flush=True,
         )
         parsed = RECIPE_BATCH.validate_python(recipes_data)
-        _align_inventory_names(parsed, safe, allowed)
-        _filter_pantry_items(parsed, allowed_names)
-        _validate_inventory(parsed, allowed)
-        _validate_allergies(parsed, terms)
+        parsed = _filter_and_pad_valid_recipes(parsed, safe, allowed, terms)
         print(
             f"[RECIPE_GEN] Successfully validated {len(parsed)} recipes",
             file=sys.stderr,

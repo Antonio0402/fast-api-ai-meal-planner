@@ -42,6 +42,21 @@ ALLERGY_ALIASES: dict[str, tuple[str, ...]] = {
     "vung": ("mè", "vừng", "dầu mè", "dầu vừng"),
 }
 
+# Các từ khóa chuẩn tiếng Việt/ngoại lai mang thanh ngang (không có dấu phụ).
+# Luôn đối chiếu giữ dấu để tránh khớp nhầm: "cua" != "của/cứa", "trai" != "trái/trải",
+# "ngao" != "ngào", "bia" != "bìa", "nui" != "núi".
+THANH_NGANG_TERMS = {
+    "cua", "ngao", "trai", "bia", "nui", "miso", "gluten", "mayonnaise", "whipping cream",
+}
+
+# Các cụm từ nấu ăn thông dụng chứa từ đồng âm nhưng không phải dị nguyên.
+NON_ALLERGEN_PHRASES = (
+    r"tép\s+(?:tỏi|hành|bưởi|cam|chanh|quýt)",
+    r"mì\s+chính",
+    r"mực\s+nước",
+    r"cá\s+(?:nhân|biệt)",
+)
+
 
 def _marked(value: str) -> str:
     """Chữ thường, NFC, gộp khoảng trắng nhưng giữ dấu tiếng Việt."""
@@ -50,6 +65,13 @@ def _marked(value: str) -> str:
 
 def _has_marks(value: str) -> bool:
     return _marked(value) != normalize_name(value)
+
+
+def _scrub_non_allergens(marked_text: str) -> str:
+    result = marked_text
+    for pattern in NON_ALLERGEN_PHRASES:
+        result = re.sub(pattern, " ", result)
+    return result
 
 
 def normalize_allergies(allergies: list[str]) -> list[str]:
@@ -68,17 +90,23 @@ def expand_allergy_terms(allergies: list[str]) -> list[str]:
     """Mở rộng nhóm dị ứng thành danh sách từ khóa cần tránh (giữ dấu nếu có)."""
     terms: list[str] = []
     for allergy in normalize_allergies(allergies):
-        terms.append(allergy)
-        terms.extend(ALLERGY_ALIASES.get(normalize_name(allergy), ()))
+        aliases = ALLERGY_ALIASES.get(normalize_name(allergy), ())
+        if _has_marks(allergy) or not aliases:
+            terms.append(allergy)
+        terms.extend(aliases)
     return list(dict.fromkeys(terms))
 
 
 def _contains(text: str, term: str) -> bool:
-    haystack = _marked(text) if _has_marks(term) else normalize_name(text)
-    needle = _marked(term) if _has_marks(term) else normalize_name(term)
+    marked_term = _marked(term)
+    use_marked = _has_marks(term) or marked_term in THANH_NGANG_TERMS
+    marked_text = _scrub_non_allergens(_marked(text))
+    haystack = marked_text if use_marked else normalize_name(marked_text)
+    needle = marked_term if use_marked else normalize_name(term)
     return bool(needle) and re.search(rf"(?<!\w){re.escape(needle)}(?!\w)", haystack) is not None
 
 
 def find_allergy_term(text: str, terms: list[str]) -> str | None:
     """Trả về từ khóa dị ứng đầu tiên xuất hiện trong văn bản, hoặc None."""
     return next((term for term in terms if _contains(text, term)), None)
+
