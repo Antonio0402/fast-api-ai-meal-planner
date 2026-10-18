@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: freshplan-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+      - key: IS_MOCKING
+        value: "false"
+      - key: WEB_ORIGINS
+        value: "*"
+      - key: SUPABASE_URL
+        value: "https://xveulgxwpsqerrxvglle.supabase.co"
+      - key: DATABASE_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false

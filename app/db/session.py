@@ -1,9 +1,14 @@
+from urllib.parse import quote_plus
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import settings
 
 database_url = settings.database_url
+if "${DATABASE_PASSWORD}" in database_url and settings.database_password:
+    database_url = database_url.replace(
+        "${DATABASE_PASSWORD}", quote_plus(settings.database_password)
+    )
 if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql+psycopg://", 1)
 elif database_url.startswith("postgresql://"):

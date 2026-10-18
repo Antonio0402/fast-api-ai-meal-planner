@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     database_url: str
+    database_password: str = ""
     is_mocking: bool = False
     web_origins: str = "http://localhost:8081,http://127.0.0.1:8081"
     cors_origin_regex: str | None = (
