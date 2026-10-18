@@ -12,8 +12,8 @@ class Settings(BaseSettings):
     supabase_url: str = ""
     supabase_jwt_secret: str | None = None
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-3.8-flash"
-    gemini_timeout_seconds: float = 20.0
+    gemini_model: str = "gemini-2.5-flash"
+    gemini_timeout_seconds: float = 75.0
     gemini_scan_model: str = "gemini-3.1-pro-preview"
     gemini_scan_timeout_seconds: float = 90.0
     scan_storage_dir: str = "var/scans"
