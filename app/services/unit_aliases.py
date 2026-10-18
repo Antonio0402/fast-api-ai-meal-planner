@@ -13,6 +13,14 @@ UNIT_ALIASES = {
     "litre": "l",
     "milliliter": "ml",
     "millilitre": "ml",
+    "trái": "quả",
+    "trai": "quả",
+    "qua": "quả",
+    "muỗng": "thìa",
+    "muong": "thìa",
+    "thia": "thìa",
+    "muỗng canh": "thìa",
+    "thìa canh": "thìa",
 }
 
 

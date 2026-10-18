@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import logging
 from typing import Annotated, Any
 from uuid import UUID, uuid4
 
@@ -19,12 +20,55 @@ from app.services.allergy import expand_allergy_terms, find_allergy_term, normal
 from app.services.db_utils import fetch_all
 from app.services.unit_aliases import to_base
 
+logger = logging.getLogger(__name__)
+
 MIN_RECIPES = 7
 MAX_RECIPES = 21
 FULL_PLAN_CAPACITY_RATIO = 0.6
 RECIPE_BATCH = TypeAdapter(
     Annotated[list[GeneratedRecipe], Field(min_length=MIN_RECIPES, max_length=MAX_RECIPES)]
 )
+
+
+def _clean_json_text(raw: str) -> str:
+    text = raw.strip()
+    if text.startswith("```"):
+        lines = text.splitlines()
+        if lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        text = "\n".join(lines).strip()
+    return text
+
+
+def _align_inventory_names(
+    recipes: list[GeneratedRecipe],
+    safe: list[Ingredient],
+    allowed: set[tuple[str, str]],
+) -> None:
+    for recipe in recipes:
+        changed = False
+        for item in recipe.items:
+            norm_item = normalize_name(item.name)
+            dim = to_base(1, item.unit).dimension
+            if (norm_item, dim) in allowed:
+                continue
+            for inv in safe:
+                norm_inv = normalize_name(inv.name)
+                inv_dim = to_base(1, inv.unit).dimension
+                if inv_dim != dim:
+                    continue
+                if (
+                    norm_item.startswith(f"{norm_inv} ")
+                    or norm_item.endswith(f" {norm_inv}")
+                    or norm_inv.startswith(f"{norm_item} ")
+                ):
+                    item.name = inv.name
+                    changed = True
+                    break
+        if changed:
+            recipe.merge_ingredients()
 
 
 def _validate_inventory(recipes: list[GeneratedRecipe], allowed: set[tuple[str, str]]) -> None:
@@ -163,12 +207,19 @@ def generate_recipes(
     )
     try:
         raw = create_gemini_client().generate_text(prompt, response_schema=RECIPE_BATCH.json_schema())
-        parsed = RECIPE_BATCH.validate_json(raw)
+        cleaned = _clean_json_text(raw)
+        parsed = RECIPE_BATCH.validate_json(cleaned)
+        _align_inventory_names(parsed, safe, allowed)
         _validate_inventory(parsed, allowed)
         _validate_allergies(parsed, terms)
     except APIError:
         raise
     except Exception as exc:
+        logger.error(
+            "Recipe generation validation failed: %s | Raw: %.500s",
+            exc,
+            raw if "raw" in locals() else "None",
+        )
         raise meal_generation_error(exc) from exc
     generated = [{"id": str(uuid4()), **recipe.model_dump()} for recipe in parsed]
     with db.begin():
