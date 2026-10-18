@@ -3,6 +3,8 @@
 import hashlib
 import json
 import logging
+import sys
+import traceback
 from typing import Annotated, Any
 from uuid import UUID, uuid4
 
@@ -30,6 +32,14 @@ RECIPE_BATCH = TypeAdapter(
 )
 
 
+COMMON_PANTRY_SEASONINGS = {
+    "muoi", "duong", "bot ngot", "hat nem", "mi chinh", "tieu",
+    "dau an", "nuoc mam", "nuoc tuong", "xi dau", "nuoc",
+    "toi", "hanh tim", "hanh la", "gung", "ot", "chanh",
+    "giam", "dau hao", "sot ca chua", "tuong ca", "tuong ot",
+}
+
+
 def _clean_json_text(raw: str) -> str:
     text = raw.strip()
     if text.startswith("```"):
@@ -40,6 +50,34 @@ def _clean_json_text(raw: str) -> str:
             lines = lines[:-1]
         text = "\n".join(lines).strip()
     return text
+
+
+def _extract_recipes_data(raw: str) -> list[Any]:
+    cleaned = _clean_json_text(raw)
+    try:
+        data = json.loads(cleaned)
+    except json.JSONDecodeError:
+        start_bracket = cleaned.find("[")
+        end_bracket = cleaned.rfind("]")
+        start_brace = cleaned.find("{")
+        end_brace = cleaned.rfind("}")
+        if start_bracket != -1 and end_bracket != -1 and (start_brace == -1 or start_bracket < start_brace):
+            data = json.loads(cleaned[start_bracket:end_bracket + 1])
+        elif start_brace != -1 and end_brace != -1:
+            data = json.loads(cleaned[start_brace:end_brace + 1])
+        else:
+            raise
+
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        for key in ("recipes", "data", "items", "meal_plan", "result"):
+            if isinstance(data.get(key), list):
+                return data[key]
+        for val in data.values():
+            if isinstance(val, list):
+                return val
+    raise ValueError("AI không trả về danh sách công thức dạng mảng.")
 
 
 def _align_inventory_names(
@@ -63,6 +101,9 @@ def _align_inventory_names(
                     norm_item.startswith(f"{norm_inv} ")
                     or norm_item.endswith(f" {norm_inv}")
                     or norm_inv.startswith(f"{norm_item} ")
+                    or norm_inv.endswith(f" {norm_item}")
+                    or f" {norm_inv} " in f" {norm_item} "
+                    or f" {norm_item} " in f" {norm_inv} "
                 ):
                     item.name = inv.name
                     changed = True
@@ -71,11 +112,38 @@ def _align_inventory_names(
             recipe.merge_ingredients()
 
 
-def _validate_inventory(recipes: list[GeneratedRecipe], allowed: set[tuple[str, str]]) -> None:
+def _filter_pantry_items(
+    recipes: list[GeneratedRecipe],
+    allowed_names: set[str],
+) -> None:
     for recipe in recipes:
+        has_allowed_item = any(normalize_name(item.name) in allowed_names for item in recipe.items)
+        if has_allowed_item:
+            filtered = [
+                item for item in recipe.items
+                if normalize_name(item.name) in allowed_names
+                or normalize_name(item.name) not in COMMON_PANTRY_SEASONINGS
+            ]
+            if filtered:
+                recipe.items = filtered
+
+
+def _validate_inventory(recipes: list[GeneratedRecipe] | list[Recipe], allowed: set[tuple[str, str]]) -> None:
+    for recipe in recipes:
+        if not recipe.items:
+            raise ValueError('Công thức không chứa nguyên liệu hợp lệ.')
+        valid_count = 0
         for item in recipe.items:
-            if (normalize_name(item.name), to_base(1, item.unit).dimension) not in allowed:
-                raise ValueError('AI dùng nguyên liệu hoặc đơn vị ngoài kho đã xác nhận.')
+            norm_name = normalize_name(item.name)
+            dim = to_base(1, item.unit).dimension
+            if (norm_name, dim) in allowed:
+                valid_count += 1
+            else:
+                raise ValueError(
+                    f"AI dùng nguyên liệu hoặc đơn vị ngoài kho đã xác nhận: {item.name} ({item.unit})"
+                )
+        if valid_count == 0:
+            raise ValueError('Công thức không chứa nguyên liệu nào từ kho đã xác nhận.')
 
 
 def _validate_allergies(recipes: list[GeneratedRecipe], terms: list[str]) -> None:
@@ -156,6 +224,15 @@ def generate_recipes(
         raise APIError(422, "NO_SAFE_INGREDIENTS", "Chưa có nguyên liệu được xác nhận an toàn với dị ứng.")
     terms = expand_allergy_terms(allergies)
     allowed = {(normalize_name(item.name), to_base(1, item.unit).dimension) for item in safe}
+    allowed_names = {name for name, _ in allowed}
+    print(
+        f"[RECIPE_GEN] Starting generation for user={user_id} | "
+        f"Inventory={len(inventory)} items ({[i.name for i in inventory]}) | "
+        f"Safe={len(safe)} items ({[i.name for i in safe]}) | "
+        f"Allergies={allergies}",
+        file=sys.stderr,
+        flush=True,
+    )
     source_hash = _source_hash(inventory, allergies)
     existing = fetch_all(db, """
         SELECT recipe FROM user_recipes
@@ -163,6 +240,11 @@ def generate_recipes(
         """, {"user_id": user_id, "source_hash": source_hash})
     cached = _cached_recipes(existing, allowed, terms)
     if cached:
+        print(
+            f"[RECIPE_GEN] Returning {len(cached)} cached recipes for user={user_id}",
+            file=sys.stderr,
+            flush=True,
+        )
         return cached
     # Kết thúc transaction đọc trước khi chờ dịch vụ AI.
     db.commit()
@@ -206,15 +288,48 @@ def generate_recipes(
         f"Inventory: {json.dumps([item.model_dump(exclude_none=True) for item in safe], ensure_ascii=False)}."
     )
     try:
+        print(f"[RECIPE_GEN] Requesting Gemini for user={user_id}...", file=sys.stderr, flush=True)
         raw = create_gemini_client().generate_text(prompt, response_schema=RECIPE_BATCH.json_schema())
-        cleaned = _clean_json_text(raw)
-        parsed = RECIPE_BATCH.validate_json(cleaned)
+        print(
+            f"[RECIPE_GEN] Gemini raw response length: {len(raw) if raw else 0}",
+            file=sys.stderr,
+            flush=True,
+        )
+        print(
+            f"[RECIPE_GEN] Gemini preview: {(raw[:250] if raw else 'None')!r}",
+            file=sys.stderr,
+            flush=True,
+        )
+        recipes_data = _extract_recipes_data(raw)
+        print(
+            f"[RECIPE_GEN] Extracted {len(recipes_data)} recipe items from payload",
+            file=sys.stderr,
+            flush=True,
+        )
+        parsed = RECIPE_BATCH.validate_python(recipes_data)
         _align_inventory_names(parsed, safe, allowed)
+        _filter_pantry_items(parsed, allowed_names)
         _validate_inventory(parsed, allowed)
         _validate_allergies(parsed, terms)
+        print(
+            f"[RECIPE_GEN] Successfully validated {len(parsed)} recipes",
+            file=sys.stderr,
+            flush=True,
+        )
     except APIError:
         raise
     except Exception as exc:
+        print(
+            f"[RECIPE_GEN ERROR] Recipe generation failed: {exc}",
+            file=sys.stderr,
+            flush=True,
+        )
+        traceback.print_exc(file=sys.stderr)
+        print(
+            f"[RECIPE_GEN ERROR] Raw response was: {raw if 'raw' in locals() else 'None'}",
+            file=sys.stderr,
+            flush=True,
+        )
         logger.error(
             "Recipe generation validation failed: %s | Raw: %.500s",
             exc,

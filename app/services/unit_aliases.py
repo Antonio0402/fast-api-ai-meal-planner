@@ -21,6 +21,12 @@ UNIT_ALIASES = {
     "thia": "thìa",
     "muỗng canh": "thìa",
     "thìa canh": "thìa",
+    "muỗng cà phê": "thìa",
+    "thìa cà phê": "thìa",
+    "tsp": "thìa",
+    "tbsp": "thìa",
+    "chén": "bát",
+    "tép": "nhánh",
 }
 
 

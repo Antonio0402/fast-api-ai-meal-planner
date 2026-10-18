@@ -1,5 +1,14 @@
+import logging
+import sys
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    stream=sys.stderr,
+    force=True,
+)
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
