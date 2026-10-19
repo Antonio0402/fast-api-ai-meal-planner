@@ -8,7 +8,5 @@ __pycache__/
 .pytest_cache/
 /var/
 supabase/.temp/
-/tests/*
-!/tests/test_recipe_generation.py
 /.idea/*
 .DS_Store

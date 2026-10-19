@@ -1,184 +1,210 @@
-# FreshMeal AI Planner API
+# FreshPlan Backend — FastAPI REST API & AI Service for Meal Planning
 
-FastAPI MVP backend. The API uses Supabase Auth JWTs and PostgreSQL; Supabase
-owns login, while the mobile application calls the versioned API routes.
+FreshPlan Backend is a high-performance REST API and AI service powering the **FreshPlan** mobile application. Built with **FastAPI** and **Python 3.12**, the backend integrates **Google Gemini AI** for multimodal ingredient recognition and personalized recipe generation, provides robust Vietnamese allergy filtering, manages weekly 21-meal scheduling, and computes automated grocery lists.
 
-## Setup
+---
 
-1. Create/activate the existing project virtual environment and install:
+## Live Cloud Deployment (Render)
 
-   ```powershell
-   pip install -r requirements.txt
-   ```
+The backend is deployed and running live on the **Render Cloud Platform**:
 
-2. Copy `.env.example` to `.env`, then configure the existing Supabase project's
-   PostgreSQL `DATABASE_URL`, `SUPABASE_URL`, and `GEMINI_API_KEY`. Never commit `.env`.
-   Copy the Session pooler URI from the intended Supabase project's **Connect**
-   dialog and URL-encode special characters in its password.
-   PostgreSQL URLs in `postgres://` or `postgresql://` form are normalized to
-   the installed psycopg driver.
-3. Apply migrations and seed data to the intended database:
+- **Production API Base URL**: [https://fast-api-ai-meal-planner.onrender.com](https://fast-api-ai-meal-planner.onrender.com)
+- **Interactive Swagger UI**: [https://fast-api-ai-meal-planner.onrender.com/docs](https://fast-api-ai-meal-planner.onrender.com/docs)
+- **Alternative ReDoc Explorer**: [https://fast-api-ai-meal-planner.onrender.com/redoc](https://fast-api-ai-meal-planner.onrender.com/redoc)
+- **Service Health Check**: [https://fast-api-ai-meal-planner.onrender.com/health](https://fast-api-ai-meal-planner.onrender.com/health) (Returns `{"status": "ok"}`)
 
-   ```powershell
-   python -m scripts.run_migrations
-   ```
+---
 
-   These operations are explicit; application startup never migrates the
-   database. `scripts.seed_data` is mock-only and requires `IS_MOCKING=true`;
-   never use it for the real app. Migration `002_app_data.sql` adds the mobile
-   snapshot, replay keys, and user-owned AI recipes. Review SQL before applying.
-4. Start the API:
+## Core Capabilities
 
-   ```powershell
-   python -m scripts.run_dev
-   # Hoặc: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-   ```
+- **AI-Powered Image Recognition**: Accepts pantry and refrigerator photos (JPEG, PNG, WebP, HEIC/HEIF converted), analyzes images via Google Gemini Vision, and extracts detected ingredient candidates with standard units.
+- **Allergy Guard & Keyword Normalization**: Implements Unicode NFC normalization and diacritic-aware matching for Vietnamese ingredients. Excludes cross-reactive allergens (e.g., seafood, tree nuts, peanuts, dairy, eggs, gluten) while preventing homophone false positives (e.g., distinguishing "cá" from "cà", "cua" from "của").
+- **Personalized Recipe Generation**: Queries Gemini AI using strict structured JSON schemas to suggest practical recipes utilizing available ingredients, tailored to target portion counts and preparation time limits.
+- **21-Meal Weekly Planner**: Schedules meals (Breakfast, Lunch, Dinner) across all 7 days of the week based on selected or AI-generated recipes.
+- **Smart Grocery List**: Compares the ingredients required for the weekly meal plan against current inventory, computing exact shortage quantities while converting compatible units (kg ↔ g, l ↔ ml).
+- **User State Synchronization**: Handles user inventory and meal schedule snapshots atomically with revision tracking (`If-Match`) and idempotency guarantees (`Idempotency-Key`).
+- **Security & JWT Verification**: Validates Supabase Auth tokens (RS256 via JWKS with HS256 fallback), securing all user endpoints and enforcing strict user-level data isolation.
 
-   Interactive OpenAPI is available at `/docs`; the internal health endpoint
-   is `/health`. Để thiết bị di động (Expo Go) kết nối được, server cần lắng nghe
-   trên `0.0.0.0` (thay vì 127.0.0.1) và Windows Defender Firewall cần cho phép
-   cổng 8000 trên mạng Private.
+---
 
-The mobile app calls the versioned routes in `app/api/routes/`: snapshot sync
-under `users`, AI recipes under `recipes`, plan/shopping under `meal_plans`, and
-image detection under `scan_jobs`. Confirmed inventory drives recipe generation;
-the backend does not seed a fixed catalog in live mode. The app's
-`EXPO_PUBLIC_IS_MOCKING` and backend `IS_MOCKING` must both be `true` to use
-their respective mock data. Native devices need a reachable HTTPS or LAN API
-origin rather than `127.0.0.1`. Khi chạy dev với Expo Go, mobile app tự động
-nhận diện IP LAN máy chủ dev từ Metro bundler.
+## System Architecture & Tech Stack
 
-## Xuất hợp đồng OpenAPI
+| Component | Technology | Purpose |
+|---|---|---|
+| **API Framework** | FastAPI 0.115+ / Starlette | High-performance async web framework |
+| **Runtime & Server** | Python 3.12+, Uvicorn (ASGI) | Execution environment and web server |
+| **AI Engine** | Google Gemini 2.5 (`gemini-2.5-flash`, `gemini-2.5-pro`) | Multimodal vision & recipe generation via `google-genai` SDK |
+| **Database & ORM** | PostgreSQL 16 (Supabase), SQLAlchemy 2.0, Psycopg 3 | Relational database persistence & pooled connections |
+| **Authentication** | Supabase Auth (JWT) via `PyJWT` & `httpx` | Token verification & identity extraction |
+| **Data Validation** | Pydantic v2 & `pydantic-settings` | Request/response schema validation and environment management |
+| **Image Processing** | Pillow (PIL) | Server-side image decoding and magic-byte validation |
+| **Cloud Hosting** | Render & Docker | Containerized cloud deployment |
 
-Từ `../fresh-plan`, `npm run generate:api` thực hiện kiểm tra project/database live,
-kiểm tra drift rồi xuất OpenAPI qua stdout và sinh API types đang dùng ở frontend.
-Cài package codegen riêng bằng `npm run setup:schemas`; xem
-`../fresh-plan/SCHEMA_CODEGEN.md` về đăng nhập CLI, baseline và giới hạn drift.
-`scripts.schema_contract database` chỉ đọc catalog trong transaction READ ONLY; không chạy
-migration. `database.schema.json` là baseline remote, không phải lịch sử migration.
+---
 
-Chạy từ thư mục `fast-api` với môi trường Python đã cài dependencies:
+## Project Structure
 
-```powershell
-python -m scripts.schema_contract api
+```text
+fast-api/
+├── app/
+│   ├── ai/                 # Gemini client, vendor adapters, prompts, and key routing
+│   │   ├── vendor/         # Gemini agent and structured tool execution logic
+│   │   ├── gemini_provider.py
+│   │   └── prompts.py
+│   ├── api/
+│   │   └── routes/         # Versioned REST API endpoints
+│   │       ├── health.py   # Liveness & readiness probes (/health)
+│   │       ├── inventory.py
+│   │       ├── meal_plans.py # Weekly plan generation & shopping lists
+│   │       ├── recipes.py  # AI recipe generation & pantry matching
+│   │       ├── scan_jobs.py# Photo upload & ingredient detection
+│   │       └── users.py    # User app data sync (/api/v1/users/me/data)
+│   ├── core/               # Configuration, auth verification, and normalization
+│   │   ├── auth.py         # Supabase JWT signature validation (JWKS)
+│   │   ├── config.py       # Pydantic Settings management (.env)
+│   │   └── normalization.py# Unicode and diacritic normalization
+│   ├── db/                 # Database connection pooling & migration runner
+│   │   ├── migration_runner.py
+│   │   └── session.py
+│   ├── models/             # SQLAlchemy database models
+│   ├── schemas/            # Pydantic request/response schemas
+│   │   ├── app_data.py
+│   │   ├── recipe.py
+│   │   └── weekly_plan.py
+│   ├── services/           # Business domain services (Allergy, RecipeGen, Scan)
+│   └── main.py             # FastAPI app initialization, middleware, and routers
+├── sql/
+│   └── migrations/         # Idempotent PostgreSQL migration scripts (000, 001, 002)
+├── scripts/
+│   ├── run_dev.py          # Development server launcher (0.0.0.0:8000)
+│   ├── run_migrations.py   # Database migration execution script
+│   └── seed_data.py        # Mock database seeder
+├── seed/
+│   └── seed_data.sql       # Baseline recipes and ingredients SQL
+├── Dockerfile              # Docker container definition
+├── Procfile                # Process definition for cloud PaaS
+├── render.yaml             # Render infrastructure-as-code deployment configuration
+├── requirements.txt        # Production Python dependencies
+└── .env.example            # Environment variables template
 ```
 
-Lệnh xuất JSON qua stdout từ route và model Pydantic hiện tại. Không cần `.env`,
-credentials, database hay server đang chạy. CLI dùng cấu hình SQLite trong bộ nhớ riêng cho tiến trình xuất, không mở kết nối và không chạy lifespan, migration hoặc AI.
-File JSON có thứ tự key ổn định, UTF-8 và newline LF; không sửa thủ công.
-Có thể xuất file để xem bằng `--output <path>` (thư mục đích phải tồn tại), nhưng
-không lưu thêm OpenAPI JSON vào repo. Khi đổi hợp đồng, sinh lại và review diff
-`fresh-plan/src/services/generated/api.types.ts` cùng source.
-Các field bên trong JSONB lấy từ Pydantic; thêm cột PostgreSQL không tự đổi OpenAPI.
+---
 
-OpenAPI mô tả envelope lỗi `{error: {code, message}, detail: {code, message}}`,
-header bắt buộc `If-Match`/`Idempotency-Key` của PUT snapshot, các lỗi revision,
-idempotency, upload và AI. Một số route không được mobile dùng vẫn giữ response
-dictionary tổng quát; bước này không mở rộng model cho các route đó.
+## API Endpoints Reference
 
-Các script còn lại có mục đích riêng: `run_migrations` áp dụng SQL khi được yêu cầu;
-`seed_data` chỉ nạp dữ liệu mock. Chúng không thuộc codegen và không chạy tự động.
-Các database types Python/TypeScript không có nơi dùng đã bỏ; Pydantic gắn vào
-`response_model` của route vẫn thực hiện validation/serialization tại runtime.
+All application endpoints are versioned under `/api/v1/`:
 
-## Tests
+| Method | Path | Description | Authentication |
+|---|---|---|---|
+| `GET` | `/health` | Health check endpoint | Public |
+| `POST` | `/api/v1/scan-jobs/detect` | Upload ingredient photo for AI analysis | Supabase Bearer JWT |
+| `POST` | `/api/v1/recipes/generated` | Generate customized recipes using AI | Supabase Bearer JWT |
+| `POST` | `/api/v1/recipes/match` | Match existing pantry items with recipe catalog | Supabase Bearer JWT |
+| `POST` | `/api/v1/recipes/by-ids` | Retrieve recipe details by IDs | Supabase Bearer JWT |
+| `POST` | `/api/v1/weekly-plans/generate-from-inventory` | Generate 21-meal weekly schedule | Supabase Bearer JWT |
+| `POST` | `/api/v1/weekly-plans/shopping/build` | Calculate smart grocery shopping list | Supabase Bearer JWT |
+| `GET` | `/api/v1/users/me/data` | Fetch user inventory, weekly slots, and settings | Supabase Bearer JWT |
+| `PUT` | `/api/v1/users/me/data` | Atomically save user inventory and meal plans | Supabase Bearer JWT |
 
-Kiểm thử xuất OpenAPI và hợp đồng mobile không cần PostgreSQL:
+---
 
-```powershell
-$env:DATABASE_URL = 'sqlite+pysqlite:///:memory:'
-python -m unittest tests.test_openapi_export tests.test_mobile_contract -v
-python -m unittest tests.test_recipe_generation -v
+## Local Development Setup
+
+### Prerequisites
+
+- Python 3.12 or higher
+- PostgreSQL database instance (local or Supabase cloud instance)
+- Google Gemini API key
+
+### 1. Create Virtual Environment & Install Dependencies
+
+```bash
+# Navigate to backend directory
+cd fast-api
+
+# Create Python virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+# Windows (PowerShell):
+.venv\Scripts\Activate.ps1
+# Linux / macOS:
+source .venv/bin/activate
+
+# Install required dependencies
+pip install -r requirements.txt
 ```
 
-Bộ export chạy trong tiến trình con, chặn kết nối DB/mạng và kiểm tra sinh file
-hai lần cho cùng nội dung. Bộ mobile dùng DB/AI mock, không gọi dịch vụ thật.
+### 2. Environment Configuration
 
-The AI layer has a standalone offline suite that needs no database:
+Copy `.env.example` to `.env`:
 
-```powershell
-python -m pytest --confcutdir=tests/ai tests/ai -q
+```bash
+cp .env.example .env
 ```
 
-Tests require a dedicated local PostgreSQL database. They reject non-local
-hosts, create a minimal `auth.users` stub if needed, and run migrations/seed
-only against `TEST_DATABASE_URL`. They use generated RSA JWT keys and fake AI
-clients; they do not call Supabase or Gemini.
+Configure the following variables in `.env`:
 
-```powershell
-$env:TEST_DATABASE_URL = 'postgresql+psycopg://postgres:<local-password>@localhost:5432/freshplandb'; $env:DATABASE_URL = $env:TEST_DATABASE_URL; python -m pytest -q
+```dotenv
+# Set to 'false' to use live PostgreSQL and Gemini AI
+IS_MOCKING=false
+
+# Supabase Auth URL
+SUPABASE_URL=https://your-project-ref.supabase.co
+
+# PostgreSQL database connection string (Session pooler or Direct connection)
+DATABASE_URL=postgresql+psycopg://postgres:your-password@your-db-host:5432/postgres
+
+# Google Gemini API Key
+GEMINI_API_KEY=your-gemini-api-key
+
+# Gemini Model Selection (default: gemini-2.5-flash)
+GEMINI_MODEL=gemini-2.5-flash
+GEMINI_TIMEOUT_SECONDS=75
 ```
 
-## Scan storage and operational notes
+### 3. Run Database Migrations
 
-- Uploads accept JPEG, PNG, or WebP, are limited to 5 MB, checked against magic
-  bytes and decoded before a job is created.
-- The MVP uses FastAPI `BackgroundTasks` and private local files under
-  `var/scans/`; processing concurrency and stuck-job recovery are configured
-  through `.env`. This is single-process storage, not durable queue/object
-  storage. Use shared private object storage and a durable worker before
-  deploying multiple API instances.
-- Job images are removed after confirmation or expiration. The scan worker
-  stores only normalized public error codes, not provider response bodies.
-- The AI scan source is vendored under `app/ai/vendor/`; its key-file loader is
-  not used. The backend reads `GEMINI_API_KEY`; image scans use
-  `GEMINI_SCAN_MODEL` (default `gemini-2.5-pro`) and
-  `GEMINI_SCAN_TIMEOUT_SECONDS` (default 90 seconds). Other AI tasks use
-  `GEMINI_MODEL` and `GEMINI_TIMEOUT_SECONDS`. Restart the backend after
-  changing these settings. Pro requests can take longer and cost more;
-  availability and quotas depend on the Google API project.
-- Gemini scan requests include a JSON schema capped at 20 ingredients. The
-  mobile detect route preserves rate-limit (429), timeout (504), invalid-output
-  (502), and configuration/provider-unavailable (503) error codes. Offline
-  tests in `tests/ai/test_scan_flow.py` cover this route without database access.
-- `sql/migrations/001_user_scan_idempotency.sql` adds foreign keys as `NOT
-  VALID` to avoid blocking deployment on legacy orphan rows. New writes are
-  checked; validate those constraints separately after reviewing legacy data.
+Apply idempotent SQL migrations to initialize the schema:
 
-## Lớp AI từ GeminiAgentMealPLanner
-
-Logic `agent.py` và `recipe.py` được tích hợp vào `app/ai/vendor/`, cùng adapter, key router và scan hiện có. Backend chạy độc lập, không import thư mục service gốc và không đọc `.env.ai`. Không cần dependency hoặc migration mới.
-
-Điểm gọi dùng cấu hình FastAPI:
-
-```python
-from app.ai.gemini_provider import generate_recipe, run_agent
-from app.ai.vendor.agent import ChatMessage
-
-result = run_agent(
-    user_message="Tôi còn gì trong kho?",
-    history=[ChatMessage(role="user", content="Tôi muốn nấu bữa tối")],
-    tool_dispatcher=backend_dispatcher,
-    auth_context={"user_id": authenticated_user_id},
-    max_tool_calls=5,
-)
-
-recipe_text = generate_recipe(
-    recipe="Luộc 2 quả trứng trong 5 phút.",
-    user_context={"preferences": ["Hướng dẫn ngắn gọn"]},
-)
+```bash
+python -m scripts.run_migrations
 ```
 
-`backend_dispatcher` là callback do backend cung cấp, theo `ToolDispatcher` trong
-`vendor/agent.py`: `execute(tool_name=..., payload=..., auth_context=...)` trả
-`ToolExecutionResult`. Callback phải xác thực user, kiểm tra quyền sở hữu,
-validate dữ liệu nghiệp vụ và ghi dữ liệu an toàn; không lấy user ID từ tham số
-do model sinh. Lớp AI chỉ kiểm tra hợp đồng tool, không tự có quyền truy cập DB.
-Chưa thêm endpoint chat hoặc dispatcher ghi dữ liệu trong lần tích hợp này.
+### 4. Start Development Server
 
-Agent chỉ gọi `view`, `add`, `update`, `delete` trên `user_context`, `inventory`,
-`shopping_list`. Mỗi lượt sửa tool call sai tối đa một lần, không chạy batch
-vượt giới hạn và dừng khi callback trả lỗi. Khi dùng hết budget, model vẫn được
-trả lời kết thúc, nhưng không được gọi thêm tool. Kết quả có `status`, `message`,
-`steps_used`, `tool_results`, `error`; các thao tác đã thành công trước lỗi vẫn
-nằm trong `tool_results`, không tự rollback toàn bộ lượt hội thoại.
+Run the development server listening on `0.0.0.0:8000` (allowing mobile devices on the same Wi-Fi network to connect):
 
-Adapter dùng `systemInstruction`, `functionCall` và `functionResponse` có cấu
-trúc, giữ nguyên các part/thought signature của model. Lỗi transport được chuyển
-thành `APIError` công khai mà không trả response hoặc key của Gemini.
+```bash
+python -m scripts.run_dev
+```
 
-`generate_recipe` chỉ diễn đạt lại công thức nguồn bằng plain text. Prompt yêu
-cầu giữ nguyên nguyên liệu, lượng, đơn vị, thứ tự, thời gian và nhiệt độ; đây là
-yêu cầu gửi model, không phải kiểm chứng tự động tính tương đương của văn bản.
-Luồng `services/recipe_generation.py` sinh recipe JSON từ inventory và luồng
-scan vẫn dùng các hợp đồng hiện có.
+Alternatively:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+The interactive API documentation will be available locally at `http://127.0.0.1:8000/docs`.
+
+---
+
+## Cloud Deployment (Docker & Render)
+
+### Running with Docker
+
+Build and run the Docker container locally:
+
+```bash
+docker build -t freshplan-api .
+docker run -p 8000:8000 --env-file .env freshplan-api
+```
+
+### Render Deployment
+
+The repository includes `render.yaml` for automatic continuous deployment:
+
+1. Connect the repository to your Render account.
+2. Create a **Blueprint** service pointing to `render.yaml`.
+3. Fill in secret environment variables (`DATABASE_URL`, `GEMINI_API_KEY`) in the Render Dashboard.
+4. Render automatically builds via `requirements.txt` and starts Uvicorn with zero downtime.
